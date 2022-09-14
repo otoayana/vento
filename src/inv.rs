@@ -27,13 +27,17 @@ pub fn list(slot: &str) { // Lists files in inventory
     let ventodir: PathBuf = env_config();
     let slotdir: PathBuf = [ventodir.to_path_buf(), Path::new(slot).to_path_buf()].iter().collect();
 
-    println!("🗃️  {}", format!("Files in {} inventory:", match slot {
-        "active" => format!("{}", slot).bold(),
-        "inactive" | _ => format!("{}", slot).blue().bold()
-    }).green());
-    for file in fs::read_dir(&slotdir).unwrap() {
-       println!("- {}", file.unwrap().path().file_name().unwrap().to_os_string().into_string().unwrap());
-    };
+    if slotdir.is_dir() { // Checks if inventory selected exists
+        println!("🗃️  {}", format!("Files in {} inventory:", match slot {
+            "active" => format!("{}", slot).bold(),
+            "inactive" | _ => format!("{}", slot).blue().bold()
+        }).green());
+        for file in fs::read_dir(&slotdir).unwrap() {
+            println!("- {}", file.unwrap().path().file_name().unwrap().to_os_string().into_string().unwrap());
+        };
+    } else {
+        println!("❌ {}", format!("Vento was unable to read that slot. Valid slots are {} and {}.", format!("active").green(), format!("inactive").blue()).red());
+    }
 }
 
 pub fn switch() { // Switches between inventory slots
