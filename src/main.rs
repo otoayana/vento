@@ -26,6 +26,7 @@ fn main() {
    let args: Vec<String> = env::args().collect();
    if args.len() >= 2 {
        match args[1].as_str() {
+            "help" => help(),
             "init" => inv::init(),
             "list" => {
                 if args.len() == 3 {
@@ -35,9 +36,26 @@ fn main() {
                 };
             },
             "switch" => inv::switch(),
-            _ => println!("❔ Command not found")
+            _ => println!("❔ Command not found. Type \"vento help\" to see all commands available.")
        }
    } else {
-       println!("{} by nixgoat", format!("Vento").bold().blue());
+        help();
    }
+}
+
+fn help() {
+    println!("{}, a CLI inventory for your files
+© 2022 Lux Aliaga. Licensed under GPLv3
+
+{}
+    - {}: Initializes Vento
+    - {}: Lists files in selected inventory
+    - {}: Switches slots
+    - {}: Displays this message",
+       format!("Vento").bold().blue(),
+       format!("Usage:").bold(),
+       format!("init").bold().green(),
+       format!("list [slot]").bold().green(),
+       format!("switch").bold().green(),
+       format!("help").bold().green());
 }
