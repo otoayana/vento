@@ -4,10 +4,10 @@ use std::io::{self, Write};
 use colored::Colorize;
 
 
-pub fn init() {
+pub fn init() { // Initializes Vento
     let ventodir: PathBuf = env_config();
     
-    if ventodir.is_dir() {
+    if ventodir.is_dir() { // Checks if Vento has already been initialized and prompts the user if they want to initialize it again
         let mut answer = String::new();
         print!("⚠️  {} {}", format!("WARNING:").bold().red(), "Vento has already been initialized. Reinitializing will delete all files on the directory for Vento. Do you wish to proceed? (y/N) ");
         let _ = io::stdout().flush();
@@ -23,13 +23,13 @@ pub fn init() {
     create_slots(ventodir);
 }
 
-pub fn list(slot: &str) {
+pub fn list(slot: &str) { // Lists files in inventory
     let ventodir: PathBuf = env_config();
     let active: PathBuf = [ventodir.to_path_buf(), Path::new("active").to_path_buf()].iter().collect();
     let inactive: PathBuf = [ventodir.to_path_buf(), Path::new("inactive").to_path_buf()].iter().collect();
     let slotdir: PathBuf;
 
-    match slot {
+    match slot { // Determines which slot has been selected
         "inactive" => slotdir = inactive,
         "active" | _ => slotdir = active
     };
@@ -42,7 +42,7 @@ pub fn list(slot: &str) {
     };
 }
 
-pub fn switch() {
+pub fn switch() { // Switches between inventory slots
     let ventodir: PathBuf = env_config();
     let active: PathBuf = [ventodir.to_path_buf(), Path::new("active").to_path_buf()].iter().collect();
     let temp: PathBuf = [ventodir.to_path_buf(), Path::new("temp").to_path_buf()].iter().collect();
@@ -55,7 +55,7 @@ pub fn switch() {
     println!("🎉 {}", format!("Switched inventory slots!").green());
 }
 
-fn env_config() -> PathBuf {
+fn env_config() -> PathBuf { // Configures the directory for Vento
     let emptypath = PathBuf::new();
     let home = match dirs::home_dir() {
         Option::Some(dir) => dir,
@@ -69,7 +69,7 @@ fn env_config() -> PathBuf {
     };
 }
 
-fn create_slots(dir: PathBuf) {
+fn create_slots(dir: PathBuf) { // Used only on init. Creates all required directories.
     let active: PathBuf = [dir.to_path_buf(), Path::new("active").to_path_buf()].iter().collect();
     let inactive: PathBuf = [dir.to_path_buf(), Path::new("inactive").to_path_buf()].iter().collect();
 
