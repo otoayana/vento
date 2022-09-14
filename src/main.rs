@@ -21,6 +21,7 @@ use std::env;
 use colored::Colorize;
 
 mod inv;
+mod common;
 
 fn main() {
    let args: Vec<String> = env::args().collect();

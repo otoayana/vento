@@ -21,10 +21,10 @@ use std::{fs, process};
 use std::path::{Path, PathBuf};
 use std::io::{self, Write};
 use colored::Colorize;
-
+use super::common;
 
 pub fn init() { // Initializes Vento
-    let ventodir: PathBuf = env_config();
+    let ventodir: PathBuf = common::env_config();
     
     if ventodir.is_dir() { // Checks if Vento has already been initialized and prompts the user if they want to initialize it again
         let mut answer = String::new();
@@ -43,7 +43,7 @@ pub fn init() { // Initializes Vento
 }
 
 pub fn list(slot: &str) { // Lists files in inventory
-    let ventodir: PathBuf = env_config();
+    let ventodir: PathBuf = common::env_config();
     let slotdir: PathBuf = [ventodir.to_path_buf(), Path::new(slot).to_path_buf()].iter().collect();
 
     if slotdir.is_dir() { // Checks if inventory selected exists
@@ -60,7 +60,7 @@ pub fn list(slot: &str) { // Lists files in inventory
 }
 
 pub fn switch() { // Switches between inventory slots
-    let ventodir: PathBuf = env_config();
+    let ventodir: PathBuf = common::env_config();
     let active: PathBuf = [ventodir.to_path_buf(), Path::new("active").to_path_buf()].iter().collect();
     let temp: PathBuf = [ventodir.to_path_buf(), Path::new("temp").to_path_buf()].iter().collect();
     let inactive: PathBuf = [ventodir.to_path_buf(), Path::new("inactive").to_path_buf()].iter().collect();
@@ -72,19 +72,6 @@ pub fn switch() { // Switches between inventory slots
     println!("🎉 {}", format!("Switched inventory slots!").green());
 }
 
-fn env_config() -> PathBuf { // Configures the directory for Vento
-    let emptypath = PathBuf::new();
-    let home = match dirs::home_dir() {
-        Option::Some(dir) => dir,
-        _ => PathBuf::new()
-    };
-    if home == emptypath {
-        println!("❌ {}", format!("Vento was unable to detect your home folder. Have you configured your environment correctly?").red());
-        process::exit(0);
-    } else {
-        return [home, Path::new(".vento").to_path_buf()].iter().collect();
-    };
-}
 
 fn create_slots(dir: PathBuf) { // Used only on init. Creates all required directories.
     let active: PathBuf = [dir.to_path_buf(), Path::new("active").to_path_buf()].iter().collect();
