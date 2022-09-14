@@ -25,14 +25,8 @@ pub fn init() { // Initializes Vento
 
 pub fn list(slot: &str) { // Lists files in inventory
     let ventodir: PathBuf = env_config();
-    let active: PathBuf = [ventodir.to_path_buf(), Path::new("active").to_path_buf()].iter().collect();
-    let inactive: PathBuf = [ventodir.to_path_buf(), Path::new("inactive").to_path_buf()].iter().collect();
-    let slotdir: PathBuf;
+    let slotdir: PathBuf = [ventodir.to_path_buf(), Path::new(slot).to_path_buf()].iter().collect();
 
-    match slot { // Determines which slot has been selected
-        "inactive" => slotdir = inactive,
-        "active" | _ => slotdir = active
-    };
     println!("🗃️  {}", format!("Files in {} inventory:", match slot {
         "active" => format!("{}", slot).bold(),
         "inactive" | _ => format!("{}", slot).blue().bold()
