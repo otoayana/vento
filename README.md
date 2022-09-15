@@ -15,6 +15,11 @@ $ cargo install --path .
 
 After installing, run `vento init`. This will create a `.vento` folder in your home directory which will store your inventories. After which, you can run `vento list` to display the files in your inventories, `vento take` to move a file into your active inventory and `vento drop` to drop a file out of it. If you're stuck, run `vento help`.
 
+## TODO:
+
+- [ ] Better implementation of `list`
+- [ ] Code cleanup
+
 ## Credits
 
 - [Chesapeake](https://moth.monster/) for the original concept
