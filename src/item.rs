@@ -30,7 +30,7 @@ pub fn take(file: &String) {
     let sourcepath: PathBuf = Path::new(&file).to_path_buf();
     let destpath: PathBuf = [&active, &Path::new(file).to_path_buf()].iter().collect();
     
-    if Path::exists(&sourcepath) {
+    if Path::exists(&destpath) {
         println!("❌ {}", format!("A file with the same name already exists in your inventory!").red());
     } else if sourcepath.is_file() | sourcepath.is_symlink() {
         fs::copy(&file, &destpath).expect("❌ Vento was unable to copy the file.");
