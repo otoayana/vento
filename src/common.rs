@@ -29,7 +29,7 @@ pub fn env_config() -> PathBuf { // Configures the directory for Vento
     };
     if home == emptypath {
         println!("❌ {}", format!("Vento was unable to detect your home folder. Have you configured your environment correctly?").red());
-        process::exit(0);
+        process::exit(1);
     } else {
         return [home, Path::new(".vento").to_path_buf()].iter().collect();
     };
