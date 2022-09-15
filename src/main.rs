@@ -64,7 +64,7 @@ fn help() {
     - {}: Displays this message",
        format!("Vento").bold().blue(),
        format!("Usage:").bold(),
-       format!("take [file | directory]").bold().green(),
+       format!("take <file | directory>").bold().green(),
        format!("list [slot]").bold().green(),
        format!("switch").bold().green(),
        format!("init").bold().green(),
