@@ -28,12 +28,12 @@ mod common;
 
 fn main() {
    let args: Vec<String> = env::args().collect();
-   if args.len() >= 2 {
+   if args.len() >= 2 { // If the vector for the arguments the command is taking is larger than 2, it most likely means the user has provided an argument
        match args[1].as_str() {
             "help" | "h" => help(),
             "init" | "i" => inv::init(),
             "list" | "l" => {
-                if args.len() == 3 {
+                if args.len() == 3 { // If the user has provided a slot, it'll use it. Otherwise, it'll default to the active slot
                     inv::list(args[2].as_str());
                 } else {
                     inv::list("active");
@@ -41,14 +41,14 @@ fn main() {
             },
             "switch" | "s" => inv::switch(),
             "take" | "t"  => {
-                if args.len() == 3 {
+                if args.len() == 3 { // Similar thing with list, but change it with a file and it will show an error instead of defaulting to anything
                     item::take(&args[2]);
                 } else {
                     println!("❌ {}", format!("You need to specify a file.").red())
                 };
             },
             "drop" | "d" => {
-                if args.len() == 3 {
+                if args.len() == 3 { // Tries to get the current directory if the user hasn't provided a "landing location"
                     item::drop(&args[2], match env::current_dir() {
                         Ok(dir) => dir,
                         Err(_) => {
@@ -64,12 +64,12 @@ fn main() {
             },
             _ => println!("❔ Command not found. Type \"vento help\" to see all commands available.")
        }
-   } else {
+   } else { // If the user provides no commands, it'll fall back to the help guide
         help();
    }
 }
 
-fn help() {
+fn help() { // A quick guide to move around in Vento
     println!("{}, a CLI inventory for your files
 © 2022 Lux Aliaga. Licensed under GPLv3
 
