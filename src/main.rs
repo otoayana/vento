@@ -30,24 +30,24 @@ fn main() {
    let args: Vec<String> = env::args().collect();
    if args.len() >= 2 {
        match args[1].as_str() {
-            "help" => help(),
-            "init" => inv::init(),
-            "list" => {
+            "help" | "h" => help(),
+            "init" | "i" => inv::init(),
+            "list" | "l" => {
                 if args.len() == 3 {
                     inv::list(args[2].as_str());
                 } else {
                     inv::list("active");
                 };
             },
-            "switch" => inv::switch(),
-            "take" => {
+            "switch" | "s" => inv::switch(),
+            "take" | "t"  => {
                 if args.len() == 3 {
                     item::take(&args[2]);
                 } else {
                     println!("❌ {}", format!("You need to specify a file.").red())
                 };
             },
-            "drop" => {
+            "drop" | "d" => {
                 if args.len() == 3 {
                     item::drop(&args[2], match env::current_dir() {
                         Ok(dir) => dir,
@@ -82,10 +82,10 @@ fn help() {
     - {}: Displays this message",
        format!("Vento").bold().blue(),
        format!("Usage:").bold(),
-       format!("take <file | directory>").bold().green(),
-       format!("drop <file | directory> [destination]").bold().green(),
-       format!("list [slot]").bold().green(),
-       format!("switch").bold().green(),
-       format!("init").bold().green(),
-       format!("help").bold().green());
+       format!("take | t <file | directory>").bold().green(),
+       format!("drop | d <file | directory> [destination]").bold().green(),
+       format!("list | l [slot]").bold().green(),
+       format!("switch | s").bold().green(),
+       format!("init | i").bold().green(),
+       format!("help | h").bold().green());
 }
