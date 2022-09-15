@@ -75,6 +75,7 @@ fn help() {
 
 {}
     - {}: Takes a file or directory and saves it in your inventory
+    - {}: Drops a file off of your inventory
     - {}: Lists files in selected inventory
     - {}: Switches slots
     - {}: Initializes Vento
@@ -82,6 +83,7 @@ fn help() {
        format!("Vento").bold().blue(),
        format!("Usage:").bold(),
        format!("take <file | directory>").bold().green(),
+       format!("drop <file | directory> [destination]").bold().green(),
        format!("list [slot]").bold().green(),
        format!("switch").bold().green(),
        format!("init").bold().green(),
