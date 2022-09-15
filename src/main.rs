@@ -18,6 +18,8 @@
  */
 
 use std::env;
+use std::process;
+use std::path::{Path, PathBuf};
 use colored::Colorize;
 
 mod inv;
@@ -44,7 +46,22 @@ fn main() {
                 } else {
                     println!("❌ {}", format!("You need to specify a file.").red())
                 };
-            }
+            },
+            "drop" => {
+                if args.len() == 3 {
+                    item::drop(&args[2], match env::current_dir() {
+                        Ok(dir) => dir,
+                        Err(_) => {
+                            println!("❌ {}", format!("Vento was unable to detect your current directory. Have you configured your environment correctly?").red());
+                            process::exit(1);
+                        }
+                    });
+                } else if args.len() == 4 {
+                    item::drop(&args[2], Path::new(&args[3]).to_path_buf());
+                } else {
+                    println!("❌ {}", format!("You need to specify a file.").red())
+                };
+            },
             _ => println!("❔ Command not found. Type \"vento help\" to see all commands available.")
        }
    } else {

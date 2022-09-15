@@ -43,6 +43,23 @@ pub fn take(file: &String) {
     }
 }
 
-pub fn drop() {
-    // to be implemented
+pub fn drop(file: &String, dest: PathBuf) {
+    let ventodir = common::env_config();
+    let active: PathBuf = [ventodir.to_path_buf(), Path::new("active").to_path_buf()].iter().collect();
+    
+    let sourcepath: PathBuf = [&active, &Path::new(file).to_path_buf()].iter().collect();
+    let destpath: PathBuf = [Path::new(&dest).to_path_buf(), Path::new(file).to_path_buf()].iter().collect();
+
+    if Path::exists(&destpath) {
+        println!("❌ {}", format!("A file with the same name already exists in the destination! Try renaming it or dropping this file somewhere else.").red());
+    } else if sourcepath.is_file() | sourcepath.is_symlink() {
+        fs::copy(&sourcepath, &destpath).expect("❌ Vento was unable to copy the file.");
+        fs::remove_file(&sourcepath).expect("❌ Vento was unable to remove the file.");
+    } else if sourcepath.is_dir() {
+        let destpath: PathBuf = Path::new(&dest).to_path_buf();
+        let options = CopyOptions::new();
+        move_dir(&sourcepath, &destpath, &options).expect("❌ Vento was unable to move the directory.");
+    } else {
+        println!("❌ {}", format!("No such file or directory.").red());
+    }
 }
