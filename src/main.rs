@@ -21,6 +21,7 @@ use std::env;
 use colored::Colorize;
 
 mod inv;
+mod item;
 mod common;
 
 fn main() {
@@ -37,6 +38,13 @@ fn main() {
                 };
             },
             "switch" => inv::switch(),
+            "take" => {
+                if args.len() == 3 {
+                    item::take(&args[2]);
+                } else {
+                    println!("❌ {}", format!("You need to specify a file.").red())
+                };
+            }
             _ => println!("❔ Command not found. Type \"vento help\" to see all commands available.")
        }
    } else {
@@ -49,14 +57,16 @@ fn help() {
 © 2022 Lux Aliaga. Licensed under GPLv3
 
 {}
-    - {}: Initializes Vento
+    - {}: Takes a file or directory and saves it in your inventory
     - {}: Lists files in selected inventory
     - {}: Switches slots
+    - {}: Initializes Vento
     - {}: Displays this message",
        format!("Vento").bold().blue(),
        format!("Usage:").bold(),
-       format!("init").bold().green(),
+       format!("take [file | directory]").bold().green(),
        format!("list [slot]").bold().green(),
        format!("switch").bold().green(),
+       format!("init").bold().green(),
        format!("help").bold().green());
 }
