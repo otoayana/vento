@@ -4,7 +4,7 @@ Vento is a utility which allows you to manage your files as if you're playing an
 
 ## Install
 
-Binaries are available in the Releases tab. Otherwise, you can clone it using Git and build it with [Cargo](https://rustup.rs/)!
+Clone it using Git and build it with [Cargo](https://rustup.rs/)!
 
 ```
 $ git clone https://codeberg.org/nixgoat/vento.git && cd vento
