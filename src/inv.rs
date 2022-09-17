@@ -59,7 +59,7 @@ pub fn list(slot: &str) {
     if slotdir.is_dir() {
         // Checks if inventory selected exists
         println!(
-            "🗃️  {}", 
+            "🗃️  {}",
             format!(
                 "Files in {} inventory:",
                 match slot {
@@ -70,15 +70,23 @@ pub fn list(slot: &str) {
             .green()
         );
         for file in fs::read_dir(&slotdir).unwrap() {
+            let file = file.unwrap().path();
+
             println!(
-                "  - {}",
-                file.unwrap()
-                    .path()
+                "  - {} ({})",
+                file.clone()
                     .file_name()
                     .unwrap()
                     .to_os_string()
                     .into_string()
-                    .unwrap()
+                    .unwrap(),
+                if file.clone().is_dir() {
+                    format!("dir").blue()
+                } else if file.clone().is_symlink() {
+                    format!("symlink").yellow()
+                } else {
+                    format!("file").green()
+                }
             );
         }
     } else {
