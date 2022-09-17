@@ -17,21 +17,24 @@
  *
  */
 
-use std::fs;
-use fs_extra::dir::{CopyOptions, move_dir};
-use std::path::{Path, PathBuf};
-use colored::Colorize;
 use super::common;
+use colored::Colorize;
+use fs_extra::dir::{move_dir, CopyOptions};
+use std::fs;
+use std::path::{Path, PathBuf};
 
-pub fn take(file: &String) { // Takes a file or directory
-    let ventodir = common::env_config();
-    let active: PathBuf = [ventodir.to_path_buf(), Path::new("active").to_path_buf()].iter().collect();
-    
+pub fn take(file: &String) {
+    // Takes a file or directory
+    let active = &common::env_config()[1];
+
     let sourcepath: PathBuf = Path::new(&file).to_path_buf();
     let destpath: PathBuf = [&active, &Path::new(file).to_path_buf()].iter().collect();
-    
+
     if Path::exists(&destpath) {
-        println!("❌ {}", format!("A file with the same name already exists in your inventory!").red());
+        println!(
+            "❌ {}",
+            format!("A file with the same name already exists in your inventory!").red()
+        );
     } else if sourcepath.is_file() | sourcepath.is_symlink() {
         fs::copy(&file, &destpath).expect("❌ Vento was unable to copy the file.");
         fs::remove_file(&file).expect("❌ Vento was unable to remove the file.");
@@ -43,15 +46,20 @@ pub fn take(file: &String) { // Takes a file or directory
     }
 }
 
-pub fn drop(file: &String, dest: PathBuf) { // Drops a file or directory
-    let ventodir = common::env_config();
-    // I know I've declared the same variable multiple times through this project. I might move this to the common file and just call it from there every single time I need it, but that'll be for later.
-    let active: PathBuf = [ventodir.to_path_buf(), Path::new("active").to_path_buf()].iter().collect(); 
-    
-    let sourcepath: PathBuf = [&active, &Path::new(file).to_path_buf()].iter().collect();
-    let destpath: PathBuf = [Path::new(&dest).to_path_buf(), Path::new(file).to_path_buf()].iter().collect();
+pub fn drop(file: &String, dest: PathBuf) {
+    // Drops a file or directory
+    let active = &common::env_config()[1];
 
-    if Path::exists(&destpath) { // HAHA YANDEREDEV MOMENT. This checks what method to use for the file/directory the user has picked
+    let sourcepath: PathBuf = [&active, &Path::new(file).to_path_buf()].iter().collect();
+    let destpath: PathBuf = [
+        Path::new(&dest).to_path_buf(),
+        Path::new(file).to_path_buf(),
+    ]
+    .iter()
+    .collect();
+
+    if Path::exists(&destpath) {
+        // HAHA YANDEREDEV MOMENT. This checks what method to use for the file/directory the user has picked
         println!("❌ {}", format!("A file with the same name already exists in the destination! Try renaming it or dropping this file somewhere else.").red());
     } else if sourcepath.is_file() | sourcepath.is_symlink() {
         fs::copy(&sourcepath, &destpath).expect("❌ Vento was unable to copy the file.");
@@ -59,7 +67,8 @@ pub fn drop(file: &String, dest: PathBuf) { // Drops a file or directory
     } else if sourcepath.is_dir() {
         let destpath: PathBuf = Path::new(&dest).to_path_buf();
         let options = CopyOptions::new();
-        move_dir(&sourcepath, &destpath, &options).expect("❌ Vento was unable to move the directory.");
+        move_dir(&sourcepath, &destpath, &options)
+            .expect("❌ Vento was unable to move the directory.");
     } else {
         println!("❌ {}", format!("No such file or directory.").red());
     }

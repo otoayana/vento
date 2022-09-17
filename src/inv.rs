@@ -17,16 +17,18 @@
  *
  */
 
-use std::{fs, process};
-use std::path::{Path, PathBuf};
-use std::io::{self, Write};
-use colored::Colorize;
 use super::common;
+use colored::Colorize;
+use std::io::{self, Write};
+use std::path::{Path, PathBuf};
+use std::{fs, process};
 
-pub fn init() { // Initializes Vento
-    let ventodir: PathBuf = common::env_config();
-    
-    if ventodir.is_dir() { // Checks if Vento has already been initialized and prompts the user if they want to initialize it again
+pub fn init() {
+    // Initializes Vento
+    let ventodir = &common::env_config()[0];
+
+    if ventodir.is_dir() {
+        // Checks if Vento has already been initialized and prompts the user if they want to initialize it again
         let mut answer = String::new();
         print!("⚠️  {} {}", format!("WARNING:").bold().red(), "Vento has already been initialized. Reinitializing will delete all files on the directory for Vento. Do you wish to proceed? (y/N) ");
         let _ = io::stdout().flush();
@@ -34,51 +36,95 @@ pub fn init() { // Initializes Vento
             .read_line(&mut answer)
             .expect("❌ Failed to read input");
         match answer.as_str().trim() {
-            "y" | "Y" => {fs::remove_dir_all(&ventodir).expect("❌ Vento was unable to initalize. Do you have the correct permissions?");},
-            "n" | "N" | _ => process::exit(0)
+            "y" | "Y" => {
+                fs::remove_dir_all(&ventodir).expect(
+                    "❌ Vento was unable to initalize. Do you have the correct permissions?",
+                );
+            }
+            "n" | "N" | _ => process::exit(0),
         };
     };
-    
-    create_slots(ventodir);
+
+    create_slots();
 }
 
-pub fn list(slot: &str) { // Lists files in inventory
-    let ventodir: PathBuf = common::env_config();
-    let slotdir: PathBuf = [ventodir.to_path_buf(), Path::new(slot).to_path_buf()].iter().collect();
+pub fn list(slot: &str) {
+    // Lists files in inventory
+    let slotdir: PathBuf = match slot {
+        "active" | "a" => common::env_config()[1].clone(),
+        "inactive" | "i" => common::env_config()[2].clone(),
+        _ => PathBuf::new(),
+    };
 
-    if slotdir.is_dir() { // Checks if inventory selected exists
-        println!("🗃️  {}", format!("Files in {} inventory:", match slot {
-            "active" => format!("{}", slot).bold(),
-            "inactive" | _ => format!("{}", slot).blue().bold()
-        }).green());
+    if slotdir.is_dir() {
+        // Checks if inventory selected exists
+        println!(
+            "🗃️  {}", 
+            format!(
+                "Files in {} inventory:",
+                match slot {
+                    "active" => format!("{}", slot).bold(),
+                    "inactive" | _ => format!("{}", slot).blue().bold(),
+                }
+            )
+            .green()
+        );
         for file in fs::read_dir(&slotdir).unwrap() {
-            println!("  - {}", file.unwrap().path().file_name().unwrap().to_os_string().into_string().unwrap());
-        };
+            println!(
+                "  - {}",
+                file.unwrap()
+                    .path()
+                    .file_name()
+                    .unwrap()
+                    .to_os_string()
+                    .into_string()
+                    .unwrap()
+            );
+        }
     } else {
-        println!("❌ {}", format!("Vento was unable to read that slot. Valid slots are {} and {}.", format!("active").green(), format!("inactive").blue()).red());
+        println!(
+            "❌ {}",
+            format!(
+                "Vento was unable to read that slot. Valid slots are {} and {}.",
+                format!("active").green(),
+                format!("inactive").blue()
+            )
+            .red()
+        );
     }
 }
 
-pub fn switch() { // Switches between inventory slots
-    let ventodir: PathBuf = common::env_config();
-    let active: PathBuf = [ventodir.to_path_buf(), Path::new("active").to_path_buf()].iter().collect();
-    let temp: PathBuf = [ventodir.to_path_buf(), Path::new("temp").to_path_buf()].iter().collect();
-    let inactive: PathBuf = [ventodir.to_path_buf(), Path::new("inactive").to_path_buf()].iter().collect();
-    
-    fs::rename(&active, &temp).expect("❌ Vento was unable to switch slots. Try running vento init and try again");
-    fs::rename(&inactive, &active).expect("❌ Vento was unable to switch slots. Try running vento init and try again");
-    fs::rename(&temp, &inactive).expect("❌ Vento was unable to switch slots. Try running vento init and try again");
+pub fn switch() {
+    // Switches between inventory slots
+    let ventodir = &common::env_config()[0];
+    let active = &common::env_config()[1];
+    let inactive = &common::env_config()[2];
+    let temp: PathBuf = [ventodir.to_path_buf(), Path::new("temp").to_path_buf()]
+        .iter()
+        .collect();
+
+    fs::rename(&active, &temp)
+        .expect("❌ Vento was unable to switch slots. Try running vento init and try again");
+    fs::rename(&inactive, &active)
+        .expect("❌ Vento was unable to switch slots. Try running vento init and try again");
+    fs::rename(&temp, &inactive)
+        .expect("❌ Vento was unable to switch slots. Try running vento init and try again");
 
     println!("🎉 {}", format!("Switched inventory slots!").green());
 }
 
+fn create_slots() {
+    // Used only on init. Creates all required directories.
+    let active = &common::env_config()[1];
+    let inactive = &common::env_config()[2];
 
-fn create_slots(dir: PathBuf) { // Used only on init. Creates all required directories.
-    let active: PathBuf = [dir.to_path_buf(), Path::new("active").to_path_buf()].iter().collect();
-    let inactive: PathBuf = [dir.to_path_buf(), Path::new("inactive").to_path_buf()].iter().collect();
+    fs::create_dir_all(active)
+        .expect("❌ Vento was unable to initalize. Do you have the correct permissions?");
+    fs::create_dir_all(inactive)
+        .expect("❌ Vento was unable to initalize. Do you have the correct permissions?");
 
-    fs::create_dir_all(active).expect("❌ Vento was unable to initalize. Do you have the correct permissions?");
-    fs::create_dir_all(inactive).expect("❌ Vento was unable to initalize. Do you have the correct permissions?");
-
-    println!("🎉 {}", format!("Vento has been succesfully initialized!").green());
+    println!(
+        "🎉 {}", 
+        format!("Vento has been succesfully initialized!").green()
+    );
 }
