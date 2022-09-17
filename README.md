@@ -18,7 +18,9 @@ After installing, run `vento init`. This will create a `.vento` folder in your h
 ## TODO:
 
 - [ ] Better implementation of `list`
-- [ ] Code cleanup
+- [ ] Configuration files
+- [ ] Replace panic errors with more elegant, user friendly errors
+- [x] Code cleanup
 
 ## Credits
 
