@@ -19,6 +19,7 @@
 
 use super::common;
 use colored::Colorize;
+use size_format::SizeFormatterBinary;
 use std::io::{self, Write};
 use std::path::{Path, PathBuf};
 use std::{fs, process};
@@ -73,20 +74,24 @@ pub fn list(slot: &str) {
             let file = file.unwrap().path();
 
             println!(
-                "  - {} ({})",
+                "  - [{}] {} ({})",
+                if file.clone().is_dir() {
+                    format!("D").blue()
+                } else if file.clone().is_symlink() {
+                    format!("S").yellow()
+                } else {
+                    format!("F").green()
+                },
                 file.clone()
                     .file_name()
                     .unwrap()
                     .to_os_string()
                     .into_string()
                     .unwrap(),
-                if file.clone().is_dir() {
-                    format!("dir").blue()
-                } else if file.clone().is_symlink() {
-                    format!("symlink").yellow()
-                } else {
-                    format!("file").green()
-                }
+                format!(
+                    "{}B",
+                    SizeFormatterBinary::new(file.clone().metadata().unwrap().len())
+                )
             );
         }
     } else {
@@ -132,7 +137,6 @@ fn create_slots() {
         .expect("❌ Vento was unable to initalize. Do you have the correct permissions?");
 
     println!(
-        "🎉 {}", 
-        format!("Vento has been succesfully initialized!").green()
+        "🎉 {}",         format!("Vento has been succesfully initialized!").green()
     );
 }
