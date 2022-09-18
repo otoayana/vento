@@ -33,14 +33,15 @@ fn main() {
         match args[1].as_str() {
             "help" | "h" => help(),
             "init" | "i" => inv::init(),
-            "list" | "l" => {
-                if args.len() == 3 {
-                    // If the user has provided a slot, it'll use it. Otherwise, it'll default to the active slot
-                    inv::list(args[2].as_str());
-                } else {
-                    inv::list("active");
-                };
-            }
+            "list" | "l" => match args.len() {
+                4 => inv::list(args[2].as_str(), args[3].as_str()),
+                3 => match args[2].as_str() {
+                    "active" | "a" | "inactive" | "i" => inv::list(args[2].as_str(), ""),
+                    _ => inv::list("active", args[2].as_str()),
+                },
+                2 => inv::list("active", ""),
+                _ => println!("❌ {}", format!("Too many arguments.").red()),
+            },
             "switch" | "s" => inv::switch(),
             "take" | "t" => {
                 if args.len() == 3 {
@@ -98,7 +99,7 @@ fn help() {
         format!("drop | d <file | directory> [destination]")
             .bold()
             .green(),
-        format!("list | l [slot]").bold().green(),
+        format!("list | l [slot] [directory]").bold().green(),
         format!("switch | s").bold().green(),
         format!("init | i").bold().green(),
         format!("help | h").bold().green()

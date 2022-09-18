@@ -49,23 +49,41 @@ pub fn init() {
     create_slots();
 }
 
-pub fn list(slot: &str) {
+pub fn list(slot: &str, dir: &str) {
     // Lists files in inventory
-    let slotdir: PathBuf = match slot {
+    let mut slotdir: PathBuf = match slot {
         "active" | "a" => common::env_config()[1].clone(),
         "inactive" | "i" => common::env_config()[2].clone(),
         _ => PathBuf::new(),
     };
+
+    if dir != "" {
+        slotdir = [&slotdir, &Path::new(dir).to_path_buf()].iter().collect();
+    }
+
+    if dir.to_string().contains("..") {
+        println!("❌ {}", format!("Cannot access parent.").red());
+        process::exit(1);
+    }
 
     if slotdir.is_dir() {
         if fs::read_dir(&slotdir).unwrap().count() == 0 {
             println!(
                 "🗃️  {}",
                 format!(
-                    "No files in {}.",
+                    "No files in {}{}.",
                     match slot {
                         "active" => format!("{}", slot).bold(),
                         "inactive" | _ => format!("{}", slot).blue().bold(),
+                    },
+                    if dir != "" {
+                        if cfg!(windows) {
+                            format!("\\{}", dir.to_string())
+                        } else {
+                            format!("/{}", dir.to_string())
+                        }
+                    } else {
+                        "".to_string()
                     }
                 )
                 .green()
@@ -75,10 +93,19 @@ pub fn list(slot: &str) {
             println!(
                 "🗃️  {}",
                 format!(
-                    "Files in {} inventory ({}):",
+                    "Files in {}{} ({}):",
                     match slot {
                         "active" => format!("{}", slot).bold(),
                         "inactive" | _ => format!("{}", slot).blue().bold(),
+                    },
+                    if dir != "" {
+                        if cfg!(windows) {
+                            format!("\\{}", dir.to_string())
+                        } else {
+                            format!("/{}", dir.to_string())
+                        }
+                    } else {
+                        " inventory".to_string()
                     },
                     format!("{}", fs::read_dir(&slotdir).unwrap().count())
                         .white()
@@ -115,9 +142,9 @@ pub fn list(slot: &str) {
         println!(
             "❌ {}",
             format!(
-                "Vento was unable to read that slot. Valid slots are {} and {}.",
-                format!("active").green(),
-                format!("inactive").blue()
+                "No such slot or directory. Valid slots are {} and {}.",
+                format!("active").green().bold(),
+                format!("inactive").blue().bold()
             )
             .red()
         );
