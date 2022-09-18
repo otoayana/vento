@@ -62,11 +62,14 @@ pub fn list(slot: &str) {
         println!(
             "🗃️  {}",
             format!(
-                "Files in {} inventory:",
+                "Files in {} inventory ({}):",
                 match slot {
                     "active" => format!("{}", slot).bold(),
                     "inactive" | _ => format!("{}", slot).blue().bold(),
-                }
+                },
+                format!("{}", fs::read_dir(&slotdir).unwrap().count())
+                    .white()
+                    .bold()
             )
             .green()
         );
@@ -74,7 +77,7 @@ pub fn list(slot: &str) {
             let file = file.unwrap().path();
 
             println!(
-                "  - [{}] {} ({})",
+                "   - [{}] {} ({})",
                 if file.clone().is_dir() {
                     format!("D").blue()
                 } else if file.clone().is_symlink() {
@@ -137,6 +140,7 @@ fn create_slots() {
         .expect("❌ Vento was unable to initalize. Do you have the correct permissions?");
 
     println!(
-        "🎉 {}",         format!("Vento has been succesfully initialized!").green()
+        "🎉 {}", 
+       format!("Vento has been succesfully initialized!").green()
     );
 }
