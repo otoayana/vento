@@ -58,44 +58,58 @@ pub fn list(slot: &str) {
     };
 
     if slotdir.is_dir() {
-        // Checks if inventory selected exists
-        println!(
-            "🗃️  {}",
-            format!(
-                "Files in {} inventory ({}):",
-                match slot {
-                    "active" => format!("{}", slot).bold(),
-                    "inactive" | _ => format!("{}", slot).blue().bold(),
-                },
-                format!("{}", fs::read_dir(&slotdir).unwrap().count())
-                    .white()
-                    .bold()
-            )
-            .green()
-        );
-        for file in fs::read_dir(&slotdir).unwrap() {
-            let file = file.unwrap().path();
-
+        if fs::read_dir(&slotdir).unwrap().count() == 0 {
             println!(
-                "   - [{}] {} ({})",
-                if file.clone().is_dir() {
-                    format!("D").blue()
-                } else if file.clone().is_symlink() {
-                    format!("S").yellow()
-                } else {
-                    format!("F").green()
-                },
-                file.clone()
-                    .file_name()
-                    .unwrap()
-                    .to_os_string()
-                    .into_string()
-                    .unwrap(),
+                "🗃️  {}",
                 format!(
-                    "{}B",
-                    SizeFormatterBinary::new(file.clone().metadata().unwrap().len())
+                    "No files in {}.",
+                    match slot {
+                        "active" => format!("{}", slot).bold(),
+                        "inactive" | _ => format!("{}", slot).blue().bold(),
+                    }
                 )
+                .green()
             );
+        } else {
+            // Checks if inventory selected exists
+            println!(
+                "🗃️  {}",
+                format!(
+                    "Files in {} inventory ({}):",
+                    match slot {
+                        "active" => format!("{}", slot).bold(),
+                        "inactive" | _ => format!("{}", slot).blue().bold(),
+                    },
+                    format!("{}", fs::read_dir(&slotdir).unwrap().count())
+                        .white()
+                        .bold()
+                )
+                .green()
+            );
+            for file in fs::read_dir(&slotdir).unwrap() {
+                let file = file.unwrap().path();
+
+                println!(
+                    "   - [{}] {} ({})",
+                    if file.clone().is_dir() {
+                        format!("D").blue()
+                    } else if file.clone().is_symlink() {
+                        format!("S").yellow()
+                    } else {
+                        format!("F").green()
+                    },
+                    file.clone()
+                        .file_name()
+                        .unwrap()
+                        .to_os_string()
+                        .into_string()
+                        .unwrap(),
+                    format!(
+                        "{}B",
+                        SizeFormatterBinary::new(file.clone().metadata().unwrap().len())
+                    )
+                );
+            }
         }
     } else {
         println!(
