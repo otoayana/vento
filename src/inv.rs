@@ -117,7 +117,7 @@ pub fn list(slot: &str, dir: &str) {
                 let file = file.unwrap().path();
 
                 println!(
-                    "   - [{}] {} ({})",
+                    "   - [{}] {}{}",
                     if file.clone().is_dir() {
                         format!("D").blue()
                     } else if file.clone().is_symlink() {
@@ -131,10 +131,14 @@ pub fn list(slot: &str, dir: &str) {
                         .to_os_string()
                         .into_string()
                         .unwrap(),
-                    format!(
-                        "{}B",
-                        SizeFormatterBinary::new(file.clone().metadata().unwrap().len())
-                    )
+                    if file.clone().is_file() {
+                        format!(
+                            " ({}B)",
+                            SizeFormatterBinary::new(file.clone().metadata().unwrap().len())
+                        )
+                    } else {
+                        format!("")
+                    }
                 );
             }
         }
@@ -182,6 +186,6 @@ fn create_slots() {
 
     println!(
         "🎉 {}", 
-       format!("Vento has been succesfully initialized!").green()
+        format!("Vento has been succesfully initialized!").green()
     );
 }
