@@ -17,6 +17,7 @@
  *
  */
 
+use anyhow::{bail, Result};
 use colored::Colorize;
 use std::env;
 use std::path::Path;
@@ -26,29 +27,29 @@ mod common;
 mod inv;
 mod item;
 
-fn main() {
+fn main() -> Result<()> {
     let args: Vec<String> = env::args().collect();
     if args.len() >= 2 {
         // If the vector for the arguments the command is taking is larger than 2, it most likely means the user has provided an argument
         match args[1].as_str() {
-            "help" | "h" => help(),
-            "init" | "i" => inv::init(),
+            "help" | "h" => help()?,
+            "init" | "i" => inv::init()?,
             "list" | "l" => match args.len() {
-                4 => inv::list(args[2].as_str(), args[3].as_str()),
+                4 => inv::list(args[2].as_str(), args[3].as_str())?,
                 3 => match args[2].as_str() {
-                    "active" | "a" | "inactive" | "i" => inv::list(args[2].as_str(), ""),
-                    _ => inv::list("active", args[2].as_str()),
+                    "active" | "a" | "inactive" | "i" => inv::list(args[2].as_str(), "")?,
+                    _ => inv::list("active", args[2].as_str())?,
                 },
-                2 => inv::list("active", ""),
-                _ => println!("❌ {}", format!("Too many arguments.").red()),
+                2 => inv::list("active", "")?,
+                _ => bail!("❌ {}", format!("Too many arguments.").red()),
             },
-            "switch" | "s" => inv::switch(),
+            "switch" | "s" => inv::switch()?,
             "take" | "t" => {
                 if args.len() == 3 {
                     // Similar thing with list, but change it with a file and it will show an error instead of defaulting to anything
-                    item::take(&args[2]);
+                    item::take(&args[2])?;
                 } else {
-                    println!("❌ {}", format!("You need to specify a file.").red())
+                    bail!("❌ {}", format!("You need to specify a file.").red())
                 };
             }
             "drop" | "d" => {
@@ -63,9 +64,9 @@ fn main() {
                                 process::exit(1);
                             }
                         },
-                    );
+                    )?;
                 } else if args.len() == 4 {
-                    item::drop(&args[2], Path::new(&args[3]).to_path_buf());
+                    item::drop(&args[2], Path::new(&args[3]).to_path_buf())?;
                 } else {
                     println!("❌ {}", format!("You need to specify a file.").red())
                 };
@@ -76,11 +77,12 @@ fn main() {
         }
     } else {
         // If the user provides no commands, it'll fall back to the help guide
-        help();
+        help()?;
     }
+    Ok(())
 }
 
-fn help() {
+fn help() -> Result<()> {
     // A quick guide to move around in Vento
     println!(
         "{}, a CLI inventory for your files
@@ -104,4 +106,5 @@ fn help() {
         format!("init | i").bold().green(),
         format!("help | h").bold().green()
     );
+    Ok(())
 }

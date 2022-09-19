@@ -18,20 +18,21 @@
  */
 
 use super::common;
+use anyhow::{bail, Context, Result};
 use colored::Colorize;
 use fs_extra::dir::{move_dir, CopyOptions};
 use std::fs;
 use std::path::{Path, PathBuf};
 
-pub fn take(file: &String) {
+pub fn take(file: &String) -> Result<()> {
     // Takes a file or directory
-    let active = &common::env_config()[1];
+    let active = &common::env_config()?[1];
 
     let sourcepath: PathBuf = Path::new(&file).to_path_buf();
     let destpath: PathBuf = [&active, &Path::new(file).to_path_buf()].iter().collect();
 
     if Path::exists(&destpath) {
-        println!(
+        bail!(
             "❌ {}",
             format!("A file with the same name already exists in your inventory!").red()
         );
@@ -44,11 +45,12 @@ pub fn take(file: &String) {
     } else {
         println!("❌ {}", format!("No such file or directory.").red());
     }
+    Ok(())
 }
 
-pub fn drop(file: &String, dest: PathBuf) {
+pub fn drop(file: &String, dest: PathBuf) -> Result<()> {
     // Drops a file or directory
-    let active = &common::env_config()[1];
+    let active = &common::env_config()?[1];
 
     let sourcepath: PathBuf = [&active, &Path::new(file).to_path_buf()].iter().collect();
     let destpath: PathBuf = [
@@ -60,16 +62,17 @@ pub fn drop(file: &String, dest: PathBuf) {
 
     if Path::exists(&destpath) {
         // HAHA YANDEREDEV MOMENT. This checks what method to use for the file/directory the user has picked
-        println!("❌ {}", format!("A file with the same name already exists in the destination! Try renaming it or dropping this file somewhere else.").red());
+        bail!("❌ {}", format!("A file with the same name already exists in the destination! Try renaming it or dropping this file somewhere else.").red());
     } else if sourcepath.is_file() | sourcepath.is_symlink() {
-        fs::copy(&sourcepath, &destpath).expect("❌ Vento was unable to copy the file.");
-        fs::remove_file(&sourcepath).expect("❌ Vento was unable to remove the file.");
+        fs::copy(&sourcepath, &destpath).context("❌ Vento was unable to copy the file.")?;
+        fs::remove_file(&sourcepath).context("❌ Vento was unable to remove the file.")?;
     } else if sourcepath.is_dir() {
         let destpath: PathBuf = Path::new(&dest).to_path_buf();
         let options = CopyOptions::new();
         move_dir(&sourcepath, &destpath, &options)
             .expect("❌ Vento was unable to move the directory.");
     } else {
-        println!("❌ {}", format!("No such file or directory.").red());
+        bail!("❌ {}", format!("No such file or directory.").red());
     }
+    Ok(())
 }
