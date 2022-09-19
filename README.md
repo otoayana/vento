@@ -18,3 +18,4 @@ After installing, run `vento init`. This will create a `.vento` folder in your h
 ## Credits
 
 - [Chesapeake](https://moth.monster/) for the original concept
+- [jo!](https://codeberg.org/j0) for helping me with Rust concepts!
