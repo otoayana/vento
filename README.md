@@ -4,10 +4,21 @@ Vento is a utility which allows you to manage your files as if you're playing an
 
 ## Install
 
-Clone it using Git and build it with [Cargo](https://rustup.rs/)!
+Clone the repository using Git.
 
 ```
 $ git clone https://codeberg.org/nixgoat/vento.git && cd vento
+```
+
+The recommended method to install Vento is to use [cargo-make](https://crates.io/crates/cargo-make/0.3.54#usage-conditions-structure). This will install the binary and the manpages for Vento.
+
+```
+$ cargo make install
+```
+
+Otherwise you can build and install it with [Cargo](https://rustup.rs/). This will however not install the manpages.
+
+```
 $ cargo install --path .
 ```
 

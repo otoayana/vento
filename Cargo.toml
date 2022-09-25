@@ -11,6 +11,8 @@ repository = "https://codeberg.org/nixgoat/vento"
 license = "GPL-3.0-or-later"
 keywords = ["utility", "file-manager", "inventory"]
 categories = ["command-line-utilities", "filesystem"]
+
+build = "build.rs"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
@@ -19,5 +21,7 @@ colored = "2.0.0"
 fs_extra = "1.2.0"
 anyhow = "1.0.65"
 size_format = "1.0.2"
-clap = "3.2.22"
-clap_mangen = "0.1.11"
+
+[build-dependencies]
+man = "0.3.0"
+anyhow = "1.0.65"

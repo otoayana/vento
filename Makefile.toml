@@ -1,0 +1,32 @@
+[tasks.install-binary]
+command = "cargo"
+args = ["install", "--path", "."]
+
+[tasks.install-manpages]
+condition = { platforms = ["linux", "mac"] }
+script = [
+  "cp /tmp/vento-man/* $HOME/.local/share/man/man1/",
+  "rm -rf /tmp/vento-man"
+]
+
+[tasks.install]
+dependencies = [
+  "install-binary",
+  "install-manpages"
+]
+
+[tasks.clean-binary]
+command = "cargo"
+args = ["clean"]
+
+[tasks.clean-manpages]
+condition = { platforms = ["linux", "mac"] }
+script = [
+  "rm -rf /tmp/vento-man"
+]
+
+[tasks.clean]
+dependencies = [
+  "clean-binary",
+  "clean-manpages"
+]
