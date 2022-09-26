@@ -29,7 +29,7 @@ pub fn env_config() -> Result<Vec<PathBuf>> {
         _ => PathBuf::new(),
     };
     if home == emptypath {
-        bail!("❌ {}", format!("Vento was unable to detect your home folder. Have you configured your environment correctly?").red());
+        bail!("❌ {}", "Vento was unable to detect your home folder. Have you configured your environment correctly?".red());
     };
     let vento_dir = [home, Path::new(".vento").to_path_buf()].iter().collect();
     let active_dir = [&vento_dir, &Path::new("active").to_path_buf()]

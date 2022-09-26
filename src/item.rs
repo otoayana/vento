@@ -24,35 +24,42 @@ use fs_extra::dir::{move_dir, CopyOptions};
 use std::fs;
 use std::path::{Path, PathBuf};
 
-pub fn take(file: &String) -> Result<()> {
+pub fn take(file: &String, slot: &String) -> Result<()> {
     // Takes a file or directory
-    let active = &common::env_config()?[1];
-
+    let slotdir: PathBuf = match slot.as_str() {
+        "active" | "a" => common::env_config()?[1].clone(),
+        "inactive" | "i" => common::env_config()?[2].clone(),
+        _ => PathBuf::new(),
+    };
     let sourcepath: PathBuf = Path::new(&file).to_path_buf();
-    let destpath: PathBuf = [&active, &Path::new(file).to_path_buf()].iter().collect();
+    let destpath: PathBuf = [&slotdir, &Path::new(file).to_path_buf()].iter().collect();
 
     if Path::exists(&destpath) {
         bail!(
             "❌ {}",
-            format!("A file with the same name already exists in your inventory!").red()
+            "A file with the same name already exists in your inventory!".red()
         );
     } else if sourcepath.is_file() | sourcepath.is_symlink() {
         fs::copy(&file, &destpath).expect("❌ Vento was unable to copy the file.");
         fs::remove_file(&file).expect("❌ Vento was unable to remove the file.");
     } else if sourcepath.is_dir() {
         let options = CopyOptions::new();
-        move_dir(&file, &active, &options).expect("❌ Vento was unable to move the directory.");
+        move_dir(&file, &slotdir, &options).expect("❌ Vento was unable to move the directory.");
     } else {
-        println!("❌ {}", format!("No such file or directory.").red());
+        println!("❌ {}", "No such file or directory.".red());
     }
     Ok(())
 }
 
-pub fn drop(file: &String, dest: PathBuf) -> Result<()> {
+pub fn drop(file: &String, slot: &String, dest: PathBuf) -> Result<()> {
     // Drops a file or directory
-    let active = &common::env_config()?[1];
+    let slotdir: PathBuf = match slot.as_str() {
+        "active" | "a" => common::env_config()?[1].clone(),
+        "inactive" | "i" => common::env_config()?[2].clone(),
+        _ => PathBuf::new(),
+    };
 
-    let sourcepath: PathBuf = [&active, &Path::new(file).to_path_buf()].iter().collect();
+    let sourcepath: PathBuf = [&slotdir, &Path::new(file).to_path_buf()].iter().collect();
     let destpath: PathBuf = [
         Path::new(&dest).to_path_buf(),
         Path::new(file).to_path_buf(),
@@ -62,7 +69,7 @@ pub fn drop(file: &String, dest: PathBuf) -> Result<()> {
 
     if Path::exists(&destpath) {
         // HAHA YANDEREDEV MOMENT. This checks what method to use for the file/directory the user has picked
-        bail!("❌ {}", format!("A file with the same name already exists in the destination! Try renaming it or dropping this file somewhere else.").red());
+        bail!("❌ {}", "A file with the same name already exists in the destination! Try renaming it or dropping this file somewhere else.".red());
     } else if sourcepath.is_file() | sourcepath.is_symlink() {
         fs::copy(&sourcepath, &destpath).context("❌ Vento was unable to copy the file.")?;
         fs::remove_file(&sourcepath).context("❌ Vento was unable to remove the file.")?;
@@ -72,7 +79,7 @@ pub fn drop(file: &String, dest: PathBuf) -> Result<()> {
         move_dir(&sourcepath, &destpath, &options)
             .expect("❌ Vento was unable to move the directory.");
     } else {
-        bail!("❌ {}", format!("No such file or directory.").red());
+        bail!("❌ {}", "No such file or directory.".red());
     }
     Ok(())
 }

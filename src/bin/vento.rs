@@ -1,0 +1,54 @@
+/*
+ * Vento, a CLI inventory for your files.
+ * Copyright (C) 2022 Lux Aliaga
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
+
+use anyhow::{bail, Result};
+use colored::Colorize;
+use std::env;
+use vento::{help, inv};
+
+fn main() -> Result<()> {
+    let args: Vec<String> = env::args().collect();
+    if args.len() >= 2 {
+        // If the vector for the arguments the command is taking is larger than 2, it most likely means the user has provided an argument
+        if args[1].contains("--slot=") {
+            match args.len() {
+                3 => inv::list(&args[1].replace("--slot=", ""), &args[2])?,
+                2 => inv::list(&args[1].replace("--slot=", ""), "")?,
+                _ => bail!("❌ {}", "Too many arguments".red()),
+            };
+        } else {
+            match args[1].as_str() {
+                "-h" | "--help" => help::vento()?,
+                "-i" | "--init" => inv::init()?,
+                "-c" | "--switch" => inv::switch()?,
+                "-s" => match args.len() {
+                    4 => inv::list(&args[2], &args[3])?,
+                    3 => inv::list(&args[2], "")?,
+                    2 => bail!("❌ {}", "You need to specify a slot.".red()),
+                    _ => bail!("❌ {}", "Too many arguments".red()),
+                },
+                _ => inv::list("active", args[1].as_str())?,
+            }
+        }
+    } else {
+        // If the user provides no commands, Vento will display the files in the active slot.
+        inv::list("active", "")?;
+    }
+    Ok(())
+}

@@ -32,11 +32,11 @@ pub fn init() -> Result<()> {
     if ventodir.is_dir() {
         // Checks if Vento has already been initialized and prompts the user if they want to initialize it again
         let mut answer = String::new();
-        print!("⚠️  {} {}", format!("WARNING:").bold().red(), "Vento has already been initialized. Reinitializing will delete all files on the directory for Vento. Do you wish to proceed? (y/N) ");
+        print!("⚠️  {} {}", "WARNING:".bold().red(), "Vento has already been initialized. Reinitializing will delete all files on the directory for Vento. Do you wish to proceed? (y/N) ");
         let _ = io::stdout().flush();
         io::stdin()
             .read_line(&mut answer)
-            .expect("❌ Failed to read input");
+            .context("❌ Failed to read input")?;
         match answer.as_str().trim() {
             "y" | "Y" => fs::remove_dir_all(&ventodir)?,
             _ => process::exit(0),
@@ -55,13 +55,21 @@ pub fn list(slot: &str, dir: &str) -> Result<()> {
         _ => PathBuf::new(),
     };
 
+    let ventodir = &common::env_config()?[0];
+
+    if !ventodir.is_dir() {
+        bail!(
+            "❌ {}",
+            "Vento not initialized. Run \"vento -i\" to initialize Vento.".red()
+        );
+    }
+
     if dir != "" {
         slotdir = [&slotdir, &Path::new(dir).to_path_buf()].iter().collect();
     }
 
     if dir.to_string().contains("..") {
-        bail!("❌ {}", format!("Cannot access parent.").red());
-        // process::exit(1);
+        bail!("❌ {}", "Cannot access parent.".red());
     }
 
     if slotdir.is_dir() {
@@ -117,11 +125,11 @@ pub fn list(slot: &str, dir: &str) -> Result<()> {
                 println!(
                     "   - [{}] {}{}",
                     if file.clone().is_dir() {
-                        format!("D").blue()
+                        "D".blue()
                     } else if file.clone().is_symlink() {
-                        format!("S").yellow()
+                        "S".yellow()
                     } else {
-                        format!("F").green()
+                        "F".green()
                     },
                     file.clone()
                         .file_name()
@@ -145,8 +153,8 @@ pub fn list(slot: &str, dir: &str) -> Result<()> {
             "❌ {}",
             format!(
                 "No such slot or directory. Valid slots are {} and {}.",
-                format!("active").green().bold(),
-                format!("inactive").blue().bold()
+                "active".green().bold(),
+                "inactive".blue().bold()
             )
             .red()
         );
@@ -163,14 +171,13 @@ pub fn switch() -> Result<()> {
         .iter()
         .collect();
 
-    fs::rename(&active, &temp)
-        .expect("❌ Vento was unable to switch slots. Try running vento init and try again");
-    fs::rename(&inactive, &active)
-        .expect("❌ Vento was unable to switch slots. Try running vento init and try again");
-    fs::rename(&temp, &inactive)
-        .expect("❌ Vento was unable to switch slots. Try running vento init and try again");
+    let rename_error = "❌ Vento was unable to switch slots. Try running vento init and try again";
 
-    println!("🎉 {}", format!("Switched inventory slots!").green());
+    fs::rename(&active, &temp).context(rename_error)?;
+    fs::rename(&inactive, &active).context(rename_error)?;
+    fs::rename(&temp, &inactive).context(rename_error)?;
+
+    println!("🎉 {}", "Switched inventory slots!".green());
     Ok(())
 }
 
@@ -179,13 +186,11 @@ fn create_slots() -> Result<()> {
     let active = &common::env_config()?[1];
     let inactive = &common::env_config()?[2];
 
-    fs::create_dir_all(active)
-        .context("❌ Vento was unable to initalize. Do you have the correct permissions?")?;
-    fs::create_dir_all(inactive)
-        .context("❌ Vento was unable to initalize. Do you have the correct permissions?")?;
+    let initialize_error = "❌ Vento was unable to initalize. Do you have the correct permissions";
 
-    println!(
-        "🎉 {}",         format!("Vento has been succesfully initialized!").green()
-    );
+    fs::create_dir_all(active).context(initialize_error)?;
+    fs::create_dir_all(inactive).context(initialize_error)?;
+
+    println!("🎉 {}", "Vento has been succesfully initialized!".green());
     Ok(())
 }

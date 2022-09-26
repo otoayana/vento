@@ -47,7 +47,7 @@ fn vento() -> Result<(String, String)> {
         .description("List files and directories in the currently active inventory, the files in SLOT, the files in DIRECTORY or the files in DIRECTORY in SLOT.")
         .flag(
             Flag::new()
-                .short("-s")
+                .short("-c")
                 .long("--switch")
                 .help("Switches inventory slots"),
         )
@@ -63,7 +63,12 @@ fn vento() -> Result<(String, String)> {
                 .long("--help")
                 .help("Shows the help message"),
         )
-        .arg(Arg::new("[SLOT]"))
+        .option(
+            Opt::new("slot")
+                .short("-s")
+                .long("--slot")
+                .help("The slot to list"),
+        )
         .arg(Arg::new("[DIRECTORY]"))
         .custom(
             Section::new("before starting")
