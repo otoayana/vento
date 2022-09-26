@@ -24,7 +24,7 @@ $ cargo install --path .
 
 ## Quickstart
 
-After installing, run `vento -i`. This will create a `.vento` folder in your home directory which will store your inventories. After which, you can run `vento` to display the files in your inventories, `take` to move a file into your active inventory and `drop` to drop a file out of it. If you're stuck, run `vento help` or check the manpage by running `man vento`.
+After installing, run `vento -i`. This will create a `.vento` folder in your home directory which will store your inventories. After which, you can run `vento` to display the files in your inventories, `take` to move a file into your active inventory and `drop` to drop a file out of it. If you're stuck, run `vento -h` or check the manpage by running `man vento`.
 
 ## Credits
 
