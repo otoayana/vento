@@ -36,7 +36,7 @@ pub fn init() -> Result<()> {
         let _ = io::stdout().flush();
         io::stdin()
             .read_line(&mut answer)
-            .context("❌ Failed to read input")?;
+            .context("Failed to read input")?;
         match answer.as_str().trim() {
             "y" | "Y" => fs::remove_dir_all(&ventodir)?,
             _ => process::exit(0),
