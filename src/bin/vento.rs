@@ -30,7 +30,7 @@ fn main() -> Result<()> {
             match args.len() {
                 3 => inv::list(&args[1].replace("--slot=", ""), &args[2])?,
                 2 => inv::list(&args[1].replace("--slot=", ""), "")?,
-                _ => bail!("❌ {}", "Too many arguments".red()),
+                _ => bail!("{}", "Too many arguments".red()),
             };
         } else {
             match args[1].as_str() {
@@ -40,8 +40,8 @@ fn main() -> Result<()> {
                 "-s" => match args.len() {
                     4 => inv::list(&args[2], &args[3])?,
                     3 => inv::list(&args[2], "")?,
-                    2 => bail!("❌ {}", "You need to specify a slot.".red()),
-                    _ => bail!("❌ {}", "Too many arguments".red()),
+                    2 => bail!("{}", "You need to specify a slot.".red()),
+                    _ => bail!("{}", "Too many arguments".red()),
                 },
                 _ => inv::list("active", args[1].as_str())?,
             }

@@ -29,7 +29,7 @@ pub fn env_config() -> Result<Vec<PathBuf>> {
         _ => PathBuf::new(),
     };
     if home == PathBuf::new() {
-        bail!("❌ {}", "Vento was unable to detect your home folder. Have you configured your environment correctly?".red());
+        bail!("{}", "Vento was unable to detect your home folder. Have you configured your environment correctly?".red());
     };
     let vento_dir: PathBuf;
     let custom_dir = Path::new(&dir_config()?).to_path_buf();

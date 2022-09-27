@@ -36,17 +36,17 @@ pub fn take(file: &String, slot: &String) -> Result<()> {
 
     if Path::exists(&destpath) {
         bail!(
-            "❌ {}",
+            "{}",
             "A file with the same name already exists in your inventory!".red()
         );
     } else if sourcepath.is_file() | sourcepath.is_symlink() {
-        fs::copy(&file, &destpath).expect("❌ Vento was unable to copy the file.");
-        fs::remove_file(&file).expect("❌ Vento was unable to remove the file.");
+        fs::copy(&file, &destpath).context("Vento was unable to copy the file.")?;
+        fs::remove_file(&file).context("Vento was unable to remove the file.")?;
     } else if sourcepath.is_dir() {
         let options = CopyOptions::new();
-        move_dir(&file, &slotdir, &options).expect("❌ Vento was unable to move the directory.");
+        move_dir(&file, &slotdir, &options).context("Vento was unable to move the directory.")?;
     } else {
-        println!("❌ {}", "No such file or directory.".red());
+        bail!("{}", "No such file or directory.".red());
     }
     Ok(())
 }
@@ -69,17 +69,17 @@ pub fn drop(file: &String, slot: &String, dest: PathBuf) -> Result<()> {
 
     if Path::exists(&destpath) {
         // HAHA YANDEREDEV MOMENT. This checks what method to use for the file/directory the user has picked
-        bail!("❌ {}", "A file with the same name already exists in the destination! Try renaming it or dropping this file somewhere else.".red());
+        bail!("{}", "A file with the same name already exists in the destination! Try renaming it or dropping this file somewhere else.".red());
     } else if sourcepath.is_file() | sourcepath.is_symlink() {
-        fs::copy(&sourcepath, &destpath).context("❌ Vento was unable to copy the file.")?;
-        fs::remove_file(&sourcepath).context("❌ Vento was unable to remove the file.")?;
+        fs::copy(&sourcepath, &destpath).context("Vento was unable to copy the file.")?;
+        fs::remove_file(&sourcepath).context("Vento was unable to remove the file.")?;
     } else if sourcepath.is_dir() {
         let destpath: PathBuf = Path::new(&dest).to_path_buf();
         let options = CopyOptions::new();
         move_dir(&sourcepath, &destpath, &options)
-            .expect("❌ Vento was unable to move the directory.");
+            .context("Vento was unable to move the directory.")?;
     } else {
-        bail!("❌ {}", "No such file or directory.".red());
+        bail!("{}", "No such file or directory.".red());
     }
     Ok(())
 }

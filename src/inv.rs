@@ -59,7 +59,7 @@ pub fn list(slot: &str, dir: &str) -> Result<()> {
 
     if !ventodir.is_dir() {
         bail!(
-            "❌ {}",
+            "{}",
             "Vento not initialized. Run \"vento -i\" to initialize Vento.".red()
         );
     }
@@ -69,7 +69,7 @@ pub fn list(slot: &str, dir: &str) -> Result<()> {
     }
 
     if dir.to_string().contains("..") {
-        bail!("❌ {}", "Cannot access parent.".red());
+        bail!("{}", "Cannot access parent.".red());
     }
 
     if slotdir.is_dir() {
@@ -149,8 +149,8 @@ pub fn list(slot: &str, dir: &str) -> Result<()> {
             }
         }
     } else {
-        println!(
-            "❌ {}",
+        bail!(
+            "{}",
             format!(
                 "No such slot or directory. Valid slots are {} and {}.",
                 "active".green().bold(),
@@ -171,7 +171,7 @@ pub fn switch() -> Result<()> {
         .iter()
         .collect();
 
-    let rename_error = "❌ Vento was unable to switch slots. Try running vento init and try again";
+    let rename_error = "Vento was unable to switch slots. Try running vento init and try again";
 
     fs::rename(&active, &temp).context(rename_error)?;
     fs::rename(&inactive, &active).context(rename_error)?;
@@ -186,7 +186,7 @@ fn create_slots() -> Result<()> {
     let active = &common::env_config()?[1];
     let inactive = &common::env_config()?[2];
 
-    let initialize_error = "❌ Vento was unable to initalize. Do you have the correct permissions";
+    let initialize_error = "Vento was unable to initalize. Do you have the correct permissions?";
 
     fs::create_dir_all(active).context(initialize_error)?;
     fs::create_dir_all(inactive).context(initialize_error)?;

@@ -28,21 +28,21 @@ fn main() -> Result<()> {
         if args[1].contains("--slot=") {
             match args.len() {
                 3 => item::take(&args[2], &args[1].replace("--slot=", ""))?,
-                2 => bail!("❌ {}", "You need to specify a file".red()),
-                _ => bail!("❌ {}", "Too many arguments".red()),
+                2 => bail!("{}", "You need to specify a file".red()),
+                _ => bail!("{}", "Too many arguments".red()),
             };
         } else {
             match args[1].as_str() {
                 "--help" | "-h" => help::take()?,
                 "-s" => match args.len() {
                     4 => item::take(&args[3], &args[2])?,
-                    3 => bail!("❌ {}", "You need to specify a file".red()),
-                    2 => bail!("❌ {}", "You need to specify a slot".red()),
-                    _ => bail!("❌ {}", "Too many arguments".red()),
+                    3 => bail!("{}", "You need to specify a file".red()),
+                    2 => bail!("{}", "You need to specify a slot".red()),
+                    _ => bail!("{}", "Too many arguments".red()),
                 },
                 _ => match args.len() {
                     2 => item::take(&args[1], &String::from("active"))?,
-                    _ => bail!("❌ {}", "Too many arguments".red()),
+                    _ => bail!("{}", "Too many arguments".red()),
                 },
             }
         }

@@ -31,10 +31,10 @@ fn main() -> Result<()> {
                 4 => item::drop(&args[2], &args[1].as_str().replace("--slot=", ""), Path::new(&args[4]).to_path_buf())?,
                 3 => item::drop(&args[2], &args[1].as_str().replace("--slot=", ""), match env::current_dir() {
                     Ok(dir) => dir,
-                    Err(_) => bail!("❌ {}", "Vento was unable to detect your current directory. Have you configured your environment correctly?".red())
+                    Err(_) => bail!("{}", "Vento was unable to detect your current directory. Have you configured your environment correctly?".red())
                 })?,
-                2 => bail!("❌ {}", "You need to specify a file".red()),
-                _ => bail!("❌ {}", "Too many arguments".red()),
+                2 => bail!("{}", "You need to specify a file".red()),
+                _ => bail!("{}", "Too many arguments".red()),
             };
         } else {
             match args[1].as_str() {
@@ -43,19 +43,19 @@ fn main() -> Result<()> {
                     5 => item::drop(&args[3], &args[2], Path::new(&args[4]).to_path_buf())?,
                     4 => item::drop(&args[3], &args[2], match env::current_dir() {
                         Ok(dir) => dir,
-                        Err(_) => bail!("❌ {}", "Vento was unable to detect your current directory. Have you configured your environment correctly?".red())
+                        Err(_) => bail!("{}", "Vento was unable to detect your current directory. Have you configured your environment correctly?".red())
                     })?,
-                    3 => bail!("❌ {}", "You need to specify a file".red()),
-                    2 => bail!("❌ {}", "You need to specify a slot".red()),
-                    _ => bail!("❌ {}", "Too many arguments".red()),
+                    3 => bail!("{}", "You need to specify a file".red()),
+                    2 => bail!("{}", "You need to specify a slot".red()),
+                    _ => bail!("{}", "Too many arguments".red()),
                 },
                 _ => match args.len() {
                     3 => item::drop(&args[1], &String::from("active"), Path::new(&args[2]).to_path_buf())?,
                     2 => item::drop(&args[1], &String::from("active"), match env::current_dir() {
                         Ok(dir) => dir,
-                        Err(_) => bail!("❌ {}", "Vento was unable to detect your current directory. Have you configured your environment correctly?".red())
+                        Err(_) => bail!("{}", "Vento was unable to detect your current directory. Have you configured your environment correctly?".red())
                     })?,
-                    _ => bail!("❌ {}", "Too many arguments".red()),
+                    _ => bail!("{}", "Too many arguments".red()),
                 },
             }
         }
