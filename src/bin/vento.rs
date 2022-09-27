@@ -23,10 +23,12 @@ use std::env;
 use vento::{help, inv};
 
 fn main() -> Result<()> {
+    // Handles args in Vento
     let args: Vec<String> = env::args().collect();
     if args.len() >= 2 {
         // If the vector for the arguments the command is taking is larger than 2, it most likely means the user has provided an argument
         if args[1].contains("--slot=") {
+            // Checks if the user has provided the long argument "--slot="
             match args.len() {
                 3 => inv::list(&args[1].replace("--slot=", ""), &args[2])?,
                 2 => inv::list(&args[1].replace("--slot=", ""), "")?,
@@ -47,7 +49,7 @@ fn main() -> Result<()> {
             }
         }
     } else {
-        // If the user provides no commands, Vento will display the files in the active slot.
+        // If the user provides no arguments, Vento will display the files in the active slot.
         inv::list("active", "")?;
     }
     Ok(())

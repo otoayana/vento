@@ -44,7 +44,7 @@ pub fn vento() -> Result<()> {
 }
 
 pub fn take() -> Result<()> {
-    // A quick guide to move around in Vento
+    // A quick guide to move around in Take
     println!(
         "{}, a file grabber for Vento
 © 2022 Lux Aliaga. Licensed under GPLv3
@@ -63,7 +63,7 @@ pub fn take() -> Result<()> {
 }
 
 pub fn drop() -> Result<()> {
-    // A quick guide to move around in Vento
+    // A quick guide to move around in Drop
     println!(
         "{}, a file dropper for Vento
 © 2022 Lux Aliaga. Licensed under GPLv3

@@ -49,6 +49,7 @@ pub fn env_config() -> Result<Vec<PathBuf>> {
 }
 
 fn dir_config() -> Result<String> {
+    // Handles reading the config file or variables for Vento.
     let mut result = String::new();
     let mut config = match dirs::config_dir() {
         Option::Some(dir) => dir,

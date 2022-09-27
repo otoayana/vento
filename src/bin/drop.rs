@@ -24,9 +24,11 @@ use std::path::Path;
 use vento::{help, item};
 
 fn main() -> Result<()> {
+    // Handles args in Drop
     let args: Vec<String> = env::args().collect();
     if args.len() >= 2 {
         if args[1].contains("--slot=") {
+            // Checks if the user has provided the long argument "--slot="
             match args.len() {
                 4 => item::drop(&args[2], &args[1].as_str().replace("--slot=", ""), Path::new(&args[4]).to_path_buf())?,
                 3 => item::drop(&args[2], &args[1].as_str().replace("--slot=", ""), match env::current_dir() {
@@ -60,6 +62,7 @@ fn main() -> Result<()> {
             }
         }
     } else {
+        // If the user provides no arguments, Drop will display the help message.
         help::drop()?;
     }
     Ok(())

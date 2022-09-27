@@ -23,9 +23,11 @@ use std::env;
 use vento::{help, item};
 
 fn main() -> Result<()> {
+    // Handles args in Vento
     let args: Vec<String> = env::args().collect();
     if args.len() >= 2 {
         if args[1].contains("--slot=") {
+            // Checks if the user has provided the long argument "--slot="
             match args.len() {
                 3 => item::take(&args[2], &args[1].replace("--slot=", ""))?,
                 2 => bail!("{}", "You need to specify a file".red()),
@@ -47,6 +49,7 @@ fn main() -> Result<()> {
             }
         }
     } else {
+        // If the user provides no arguments, Take will display the help message.
         help::take()?;
     }
     Ok(())

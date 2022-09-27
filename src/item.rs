@@ -25,15 +25,16 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 pub fn take(file: &String, slot: &String) -> Result<()> {
+    // Takes a file or directory
     let ventodir = &common::env_config()?[0];
 
     if !ventodir.is_dir() {
+        // Detects if Vento hasn't been initialized and bails if so
         bail!(
             "{}",
             "Vento not initialized. Run \"vento -i\" to initialize Vento.".red()
         );
     };
-    // Takes a file or directory
     let slotdir: PathBuf = match slot.as_str() {
         "active" | "a" => common::env_config()?[1].clone(),
         "inactive" | "i" => common::env_config()?[2].clone(),
@@ -41,6 +42,7 @@ pub fn take(file: &String, slot: &String) -> Result<()> {
     };
 
     if !slotdir.is_dir() {
+        // Detects if the slot provided exists
         bail!(
             "{}",
             format!(
@@ -56,11 +58,15 @@ pub fn take(file: &String, slot: &String) -> Result<()> {
     let destpath: PathBuf = [&slotdir, &Path::new(file).to_path_buf()].iter().collect();
 
     if Path::exists(&destpath) {
+        // Checks if there's a file with the same name in the inventory.
         bail!(
             "{}",
             "A file with the same name already exists in your inventory!".red()
         );
-    } else if sourcepath.is_file() | sourcepath.is_symlink() {
+    }
+
+    if sourcepath.is_file() | sourcepath.is_symlink() {
+        // Checks the path's file type
         fs::copy(&file, &destpath).context("Vento was unable to copy the file.")?;
         fs::remove_file(&file).context("Vento was unable to remove the file.")?;
     } else if sourcepath.is_dir() {
@@ -69,6 +75,7 @@ pub fn take(file: &String, slot: &String) -> Result<()> {
     } else {
         bail!("{}", "No such file or directory.".red());
     }
+
     Ok(())
 }
 
@@ -77,6 +84,7 @@ pub fn drop(file: &String, slot: &String, dest: PathBuf) -> Result<()> {
     let ventodir = &common::env_config()?[0];
 
     if !ventodir.is_dir() {
+        // Detects if Vento hasn't been initialized and bails if so
         bail!(
             "{}",
             "Vento not initialized. Run \"vento -i\" to initialize Vento.".red()
@@ -90,6 +98,7 @@ pub fn drop(file: &String, slot: &String, dest: PathBuf) -> Result<()> {
     };
 
     if !slotdir.is_dir() {
+        // Detects if the slot provided exists
         bail!(
             "{}",
             format!(
@@ -110,9 +119,12 @@ pub fn drop(file: &String, slot: &String, dest: PathBuf) -> Result<()> {
     .collect();
 
     if Path::exists(&destpath) {
-        // HAHA YANDEREDEV MOMENT. This checks what method to use for the file/directory the user has picked
+        // Checks if there's a file with the same name in the destination path.
         bail!("{}", "A file with the same name already exists in the destination! Try renaming it or dropping this file somewhere else.".red());
-    } else if sourcepath.is_file() | sourcepath.is_symlink() {
+    }
+
+    if sourcepath.is_file() | sourcepath.is_symlink() {
+        // Checks the path's file type
         fs::copy(&sourcepath, &destpath).context("Vento was unable to copy the file.")?;
         fs::remove_file(&sourcepath).context("Vento was unable to remove the file.")?;
     } else if sourcepath.is_dir() {

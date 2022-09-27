@@ -49,106 +49,34 @@ pub fn init() -> Result<()> {
 
 pub fn list(slot: &str, dir: &str) -> Result<()> {
     // Lists files in inventory
-    let mut slotdir: PathBuf = match slot {
-        "active" | "a" => common::env_config()?[1].clone(),
-        "inactive" | "i" => common::env_config()?[2].clone(),
-        _ => PathBuf::new(),
-    };
-
     let ventodir = &common::env_config()?[0];
 
     if !ventodir.is_dir() {
+        // Detects if Vento hasn't been initialized and bails if so
         bail!(
             "{}",
             "Vento not initialized. Run \"vento -i\" to initialize Vento.".red()
         );
     }
 
+    let mut slotdir: PathBuf = match slot {
+        "active" | "a" => common::env_config()?[1].clone(),
+        "inactive" | "i" => common::env_config()?[2].clone(),
+        _ => PathBuf::new(),
+    };
+
     if dir != "" {
+        // Detects if the directory argument is not empty, and if so appends the path provided to the slot directory variable
         slotdir = [&slotdir, &Path::new(dir).to_path_buf()].iter().collect();
     }
 
     if dir.to_string().contains("..") {
+        // Basically preventing from listing anything out of bounds. ls and dir exist for that
         bail!("{}", "Cannot access parent.".red());
     }
 
-    if slotdir.is_dir() {
-        if fs::read_dir(&slotdir).unwrap().count() == 0 {
-            println!(
-                "🗃️  {}",
-                format!(
-                    "No files in {}{}.",
-                    match slot {
-                        "active" => format!("{}", slot).bold(),
-                        "inactive" | _ => format!("{}", slot).blue().bold(),
-                    },
-                    if dir != "" {
-                        if cfg!(windows) {
-                            format!("\\{}", dir.to_string())
-                        } else {
-                            format!("/{}", dir.to_string())
-                        }
-                    } else {
-                        "".to_string()
-                    }
-                )
-                .green()
-            );
-        } else {
-            // Checks if inventory selected exists
-            println!(
-                "🗃️  {}",
-                format!(
-                    "Files in {}{} ({}):",
-                    match slot {
-                        "active" => format!("{}", slot).bold(),
-                        "inactive" | _ => format!("{}", slot).blue().bold(),
-                    },
-                    if dir != "" {
-                        if cfg!(windows) {
-                            format!("\\{}", dir.to_string())
-                        } else {
-                            format!("/{}", dir.to_string())
-                        }
-                    } else {
-                        " inventory".to_string()
-                    },
-                    format!("{}", fs::read_dir(&slotdir).unwrap().count())
-                        .white()
-                        .bold()
-                )
-                .green()
-            );
-            for file in fs::read_dir(&slotdir).unwrap() {
-                let file = file.unwrap().path();
-
-                println!(
-                    "   - [{}] {}{}",
-                    if file.clone().is_dir() {
-                        "D".blue()
-                    } else if file.clone().is_symlink() {
-                        "S".yellow()
-                    } else {
-                        "F".green()
-                    },
-                    file.clone()
-                        .file_name()
-                        .unwrap()
-                        .to_os_string()
-                        .into_string()
-                        .unwrap(),
-                    if file.clone().is_file() {
-                        format!(
-                            " ({}B)",
-                            SizeFormatterBinary::new(file.clone().metadata().unwrap().len())
-                        )
-                    } else {
-                        format!("")
-                    }
-                );
-            }
-        }
-    } else {
+    if !slotdir.is_dir() {
+        // Detects if the consulted slot or directory exists
         bail!(
             "{}",
             format!(
@@ -158,6 +86,82 @@ pub fn list(slot: &str, dir: &str) -> Result<()> {
             )
             .red()
         );
+    };
+
+    if fs::read_dir(&slotdir).unwrap().count() == 0 {
+        // Detects if the slot or directory has any contents
+        println!(
+            "🗃️  {}",
+            format!(
+                "No files in {}{}.",
+                match slot {
+                    "active" => format!("{}", slot).bold(),
+                    "inactive" | _ => format!("{}", slot).blue().bold(),
+                },
+                if dir != "" {
+                    if cfg!(windows) {
+                        format!("\\{}", dir.to_string())
+                    } else {
+                        format!("/{}", dir.to_string())
+                    }
+                } else {
+                    "".to_string()
+                }
+            )
+            .green()
+        );
+    } else {
+        println!(
+            "🗃️  {}",
+            format!(
+                "Files in {}{} ({}):",
+                match slot {
+                    "active" => format!("{}", slot).bold(),
+                    "inactive" | _ => format!("{}", slot).blue().bold(),
+                },
+                if dir != "" {
+                    if cfg!(windows) {
+                        format!("\\{}", dir.to_string())
+                    } else {
+                        format!("/{}", dir.to_string())
+                    }
+                } else {
+                    " inventory".to_string()
+                },
+                format!("{}", fs::read_dir(&slotdir).unwrap().count())
+                    .white()
+                    .bold()
+            )
+            .green()
+        );
+        for file in fs::read_dir(&slotdir).unwrap() {
+            let file = file.unwrap().path();
+
+            println!(
+                "   - [{}] {}{}",
+                if file.clone().is_dir() {
+                    "D".blue()
+                } else if file.clone().is_symlink() {
+                    "S".yellow()
+                } else {
+                    "F".green()
+                },
+                file.clone()
+                    .file_name()
+                    .unwrap()
+                    .to_os_string()
+                    .into_string()
+                    .unwrap(),
+                if file.clone().is_file() {
+                    format!(
+                        " ({}B)",
+                        SizeFormatterBinary::new(file.clone().metadata().unwrap().len())
+                    )
+                } else {
+                    format!("")
+                }
+            );
+        }
     }
     Ok(())
 }
@@ -171,7 +175,7 @@ pub fn switch() -> Result<()> {
         .iter()
         .collect();
 
-    let rename_error = "Vento was unable to switch slots. Try running vento init and try again";
+    let rename_error = "Vento was unable to switch slots. Try running \"vento -i\" and try again";
 
     fs::rename(&active, &temp).context(rename_error)?;
     fs::rename(&inactive, &active).context(rename_error)?;
@@ -182,7 +186,7 @@ pub fn switch() -> Result<()> {
 }
 
 fn create_slots() -> Result<()> {
-    // Used only on init. Creates all required directories.
+    // Used only on init. Creates all required directories
     let active = &common::env_config()?[1];
     let inactive = &common::env_config()?[2];
 
