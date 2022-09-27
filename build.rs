@@ -127,9 +127,9 @@ fn ventotoml() -> Result<(String, String)> {
             Section::new("files")
             .paragraph("Linux: $XDG_CONFIG_HOME/vento.toml")
             .paragraph("macOS: $HOME/Library/Application Support/vento.toml")
-            .paragraph("{FOLDERID_RoamingAppData}\\vento.toml")
+            .paragraph("Windows: {FOLDERID_RoamingAppData}\\\\vento.toml")
         )
         .render();
 
-    Ok((page, String::from("vento.toml.5")))
+    Ok((page, String::from("vento.toml.1")))
 }
