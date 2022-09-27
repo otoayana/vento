@@ -25,12 +25,33 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 pub fn take(file: &String, slot: &String) -> Result<()> {
+    let ventodir = &common::env_config()?[0];
+
+    if !ventodir.is_dir() {
+        bail!(
+            "{}",
+            "Vento not initialized. Run \"vento -i\" to initialize Vento.".red()
+        );
+    };
     // Takes a file or directory
     let slotdir: PathBuf = match slot.as_str() {
         "active" | "a" => common::env_config()?[1].clone(),
         "inactive" | "i" => common::env_config()?[2].clone(),
         _ => PathBuf::new(),
     };
+
+    if !slotdir.is_dir() {
+        bail!(
+            "{}",
+            format!(
+                "No such slot. Valid slots are {} and {}.",
+                "active".green().bold(),
+                "inactive".blue().bold()
+            )
+            .red()
+        );
+    };
+
     let sourcepath: PathBuf = Path::new(&file).to_path_buf();
     let destpath: PathBuf = [&slotdir, &Path::new(file).to_path_buf()].iter().collect();
 
@@ -53,10 +74,31 @@ pub fn take(file: &String, slot: &String) -> Result<()> {
 
 pub fn drop(file: &String, slot: &String, dest: PathBuf) -> Result<()> {
     // Drops a file or directory
+    let ventodir = &common::env_config()?[0];
+
+    if !ventodir.is_dir() {
+        bail!(
+            "{}",
+            "Vento not initialized. Run \"vento -i\" to initialize Vento.".red()
+        );
+    };
+
     let slotdir: PathBuf = match slot.as_str() {
         "active" | "a" => common::env_config()?[1].clone(),
         "inactive" | "i" => common::env_config()?[2].clone(),
         _ => PathBuf::new(),
+    };
+
+    if !slotdir.is_dir() {
+        bail!(
+            "{}",
+            format!(
+                "No such slot. Valid slots are {} and {}.",
+                "active".green().bold(),
+                "inactive".blue().bold()
+            )
+            .red()
+        );
     };
 
     let sourcepath: PathBuf = [&slotdir, &Path::new(file).to_path_buf()].iter().collect();
