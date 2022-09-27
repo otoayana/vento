@@ -21,6 +21,7 @@ colored = "2.0.0"
 fs_extra = "1.2.0"
 anyhow = "1.0.65"
 size_format = "1.0.2"
+config = "0.13.1"
 
 [build-dependencies]
 man = "0.3.0"

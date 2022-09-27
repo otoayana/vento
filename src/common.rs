@@ -19,19 +19,25 @@
 
 use anyhow::{bail, Result};
 use colored::Colorize;
+use config::Config;
 use std::path::{Path, PathBuf};
 
 pub fn env_config() -> Result<Vec<PathBuf>> {
     // Configures the directories for Vento
-    let emptypath = PathBuf::new();
     let home = match dirs::home_dir() {
         Option::Some(dir) => dir,
         _ => PathBuf::new(),
     };
-    if home == emptypath {
+    if home == PathBuf::new() {
         bail!("❌ {}", "Vento was unable to detect your home folder. Have you configured your environment correctly?".red());
     };
-    let vento_dir = [home, Path::new(".vento").to_path_buf()].iter().collect();
+    let vento_dir: PathBuf;
+    let custom_dir = Path::new(&dir_config()?).to_path_buf();
+    if custom_dir != PathBuf::new() {
+        vento_dir = Path::new(&custom_dir).to_path_buf();
+    } else {
+        vento_dir = [home, Path::new(".vento").to_path_buf()].iter().collect();
+    }
     let active_dir = [&vento_dir, &Path::new("active").to_path_buf()]
         .iter()
         .collect();
@@ -40,4 +46,31 @@ pub fn env_config() -> Result<Vec<PathBuf>> {
         .collect();
 
     Ok(vec![vento_dir, active_dir, inactive_dir])
+}
+
+fn dir_config() -> Result<String> {
+    let mut result = String::new();
+    let mut config = match dirs::config_dir() {
+        Option::Some(dir) => dir,
+        _ => PathBuf::new(),
+    };
+
+    if &config != &PathBuf::new() {
+        config.push("vento.toml");
+        if config.is_file() {
+            let settings = Config::builder()
+                .add_source(config::File::with_name(
+                    &config.as_path().display().to_string(),
+                ))
+                .add_source(config::Environment::with_prefix("VENTO"))
+                .build()?;
+
+            result = match settings.get_string("directory") {
+                Ok(value) => value,
+                Err(_) => String::new(),
+            };
+        }
+    };
+
+    Ok(result)
 }

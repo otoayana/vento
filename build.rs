@@ -25,7 +25,7 @@ use std::io::Write;
 
 fn main() -> Result<()> {
     if cfg!(unix) {
-        let pages = [vento()?, take()?, drop()?];
+        let pages = [vento()?, take()?, drop()?, ventotoml()?];
 
         let tempdir = env::temp_dir().join("vento-man");
 
@@ -112,4 +112,24 @@ fn drop() -> Result<(String, String)> {
         .render();
 
     Ok((page, String::from("drop.1")))
+}
+
+fn ventotoml() -> Result<(String, String)> {
+    let page = Manual::new("vento.toml")
+        .about("configuration file for Vento")
+        .author(Author::new("Lux Aliaga").email("they@mint.lgbt"))
+        .description("This is the configuration file for the vento(1), take(1) and drop(1) utilities. Its presence and all its directives are optional.")
+        .custom (
+            Section::new("supported directives")
+            .paragraph("directory = \"PATH\": Changes the path in which Vento's inventories are saved in.")
+        )
+        .custom (
+            Section::new("files")
+            .paragraph("Linux: $XDG_CONFIG_HOME/vento.toml")
+            .paragraph("macOS: $HOME/Library/Application Support/vento.toml")
+            .paragraph("{FOLDERID_RoamingAppData}\\vento.toml")
+        )
+        .render();
+
+    Ok((page, String::from("vento.toml.5")))
 }
