@@ -6,6 +6,8 @@
 
 Vento is a utility which allows you to manage your files as if you're playing an old text adventure. It's made in Rust and originally inspired by [Chesapeake's Inventory](https://github.com/mothdotmonster/inventory).
 
+[![asciicast](https://asciinema.org/a/524454.svg)](https://asciinema.org/a/524454)
+
 ## Installation
 
 ### 1) Cargo (Recommended)
