@@ -1,30 +1,80 @@
-![Vento](assets/logo.png "Vento")
+![Vento](https://codeberg.org/nixgoat/vento/media/branch/master/assets/logo.png "Vento")
+
+[![Latest version](https://shields.io/crates/v/vento?color=red)](https://crates.io/crates/vento)
+[![Downloads](https://shields.io/crates/d/vento)](https://crates.io/crates/vento)
+[![Licensed under GPLv3](https://shields.io/crates/l/vento)](https://codeberg.org/nixgoat/vento/src/branch/master/LICENSE.md)
 
 Vento is a utility which allows you to manage your files as if you're playing an old text adventure. It's made in Rust and originally inspired by [Chesapeake's Inventory](https://github.com/mothdotmonster/inventory).
 
-## Install
+## Installation
 
-Clone the repository using Git.
+### 1) Cargo (Recommended)
+
+Make sure Rust is installed, along with `cargo`, Rust's package manager.
+
+```
+$ cargo install vento
+```
+
+### 2) Manually
+
+Clone the repository using `git`.
 
 ```
 $ git clone https://codeberg.org/nixgoat/vento.git && cd vento
 ```
 
-The recommended method to install Vento is to use [cargo-make](https://crates.io/crates/cargo-make/0.3.54#usage-conditions-structure). This will install the binary and the manpages for Vento.
+### 2.a) cargo-make
+
+This install method additionally installs the manpages for Vento. Make sure Rust, `cargo` and `cargo-make` are installed.
 
 ```
 $ cargo make install
 ```
 
-Otherwise you can build and install it with [Cargo](https://rustup.rs/). This will however not install the manpages.
+### 2.b) Cargo
+
+Make sure Rust is installed, along with `cargo`, Rust's package manager.
 
 ```
 $ cargo install --path .
 ```
 
-## Quickstart
+## Quick Start
 
-After installing, run `vento -i`. This will create a `.vento` folder in your home directory which will store your inventories. After which, you can run `vento` to display the files in your inventories, `take` to move a file into your active inventory and `drop` to drop a file out of it. If you're stuck, run `vento -h` or check the manpage by running `man vento`.
+After installing, run:
+
+```
+$ vento -i
+```
+
+This will create a `.vento` folder in your home directory, which will store your inventories. Some basic commands include:
+
+```
+// listing files in the currently active inventory
+$ vento
+
+// switching inventory slots
+$ vento -c
+
+// taking a file or directory
+$ take <file|directory>
+
+// dropping a file or directory
+$ drop <file|directory> [destination]
+```
+
+For additional documentation, you can check the documentation for each command by running the following.
+
+```
+$ (command) -h
+```
+
+Or, if Vento was installed through `cargo-make`, check the manpages by running:
+
+```
+$ man (command)
+```
 
 ## Credits
 
