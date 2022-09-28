@@ -55,7 +55,20 @@ pub fn take(file: &String, slot: &String) -> Result<()> {
     };
 
     let sourcepath: PathBuf = Path::new(&file).to_path_buf();
-    let destpath: PathBuf = [&slotdir, &Path::new(file).to_path_buf()].iter().collect();
+    let destpath: PathBuf = [
+        &slotdir,
+        &Path::new(
+            &Path::new(&file)
+                .file_name()
+                .unwrap()
+                .to_os_string()
+                .to_str()
+                .unwrap(),
+        )
+        .to_path_buf(),
+    ]
+    .iter()
+    .collect();
 
     if Path::exists(&destpath) {
         // Checks if there's a file with the same name in the inventory.
