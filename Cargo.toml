@@ -26,3 +26,10 @@ config = "0.13.1"
 [build-dependencies]
 man = "0.3.0"
 anyhow = "1.0.65"
+
+[profile.release]
+strip = true
+opt-level = "z"
+lto = true
+codegen-units = 1
+panic = "abort"
