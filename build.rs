@@ -31,10 +31,10 @@ fn main() -> Result<()> {
 
         create_dir_all(tempdir.clone())?;
 
-        for page in 0..pages.len() {
-            let tempfile = tempdir.join(pages[page].clone().1);
+        for page in &pages {
+            let tempfile = tempdir.join(page.clone().1);
             let mut file = File::create(tempfile).unwrap();
-            write!(&mut file, "{}", pages[page].clone().0).unwrap();
+            write!(&mut file, "{}", page.clone().0).unwrap();
         }
     }
     Ok(())

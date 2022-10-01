@@ -32,7 +32,7 @@ pub fn init() -> Result<()> {
     if ventodir.is_dir() {
         // Checks if Vento has already been initialized and prompts the user if they want to initialize it again
         let mut answer = String::new();
-        print!("⚠️  {} {}", "WARNING:".bold().red(), "Vento has already been initialized. Reinitializing will delete all files on the directory for Vento. Do you wish to proceed? (y/N) ");
+        print!("⚠️  {} Vento has already been initialized. Reinitializing will delete all files on the directory for Vento. Do you wish to proceed? (y/N) ", "WARNING:".bold().red());
         let _ = io::stdout().flush();
         io::stdin()
             .read_line(&mut answer)
@@ -65,7 +65,7 @@ pub fn list(slot: &str, dir: &str) -> Result<()> {
         _ => PathBuf::new(),
     };
 
-    if dir != "" {
+    if !dir.is_empty() {
         // Detects if the directory argument is not empty, and if so appends the path provided to the slot directory variable
         slotdir = [&slotdir, &Path::new(dir).to_path_buf()].iter().collect();
     }
@@ -95,14 +95,14 @@ pub fn list(slot: &str, dir: &str) -> Result<()> {
             format!(
                 "No files in {}{}.",
                 match slot {
-                    "active" => format!("{}", slot).bold(),
-                    "inactive" | _ => format!("{}", slot).blue().bold(),
+                    "active" => slot.bold(),
+                    _ => slot.blue().bold(),
                 },
-                if dir != "" {
+                if !dir.is_empty() {
                     if cfg!(windows) {
-                        format!("\\{}", dir.to_string())
+                        format!("\\{}", dir)
                     } else {
-                        format!("/{}", dir.to_string())
+                        format!("/{}", dir)
                     }
                 } else {
                     "".to_string()
@@ -116,14 +116,14 @@ pub fn list(slot: &str, dir: &str) -> Result<()> {
             format!(
                 "Files in {}{} ({}):",
                 match slot {
-                    "active" => format!("{}", slot).bold(),
-                    "inactive" | _ => format!("{}", slot).blue().bold(),
+                    "active" => slot.bold(),
+                    _ => slot.blue().bold(),
                 },
-                if dir != "" {
+                if !dir.is_empty() {
                     if cfg!(windows) {
-                        format!("\\{}", dir.to_string())
+                        format!("\\{}", dir)
                     } else {
-                        format!("/{}", dir.to_string())
+                        format!("/{}", dir)
                     }
                 } else {
                     " inventory".to_string()
@@ -158,7 +158,7 @@ pub fn list(slot: &str, dir: &str) -> Result<()> {
                         SizeFormatterBinary::new(file.clone().metadata().unwrap().len())
                     )
                 } else {
-                    format!("")
+                    String::new()
                 }
             );
         }

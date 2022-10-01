@@ -31,13 +31,13 @@ pub fn env_config() -> Result<Vec<PathBuf>> {
     if home == PathBuf::new() {
         bail!("{}", "Vento was unable to detect your home folder. Have you configured your environment correctly?".red());
     };
-    let vento_dir: PathBuf;
     let custom_dir = Path::new(&dir_config()?).to_path_buf();
-    if custom_dir != PathBuf::new() {
-        vento_dir = Path::new(&custom_dir).to_path_buf();
+    let vento_dir: PathBuf = if custom_dir != PathBuf::new() {
+        Path::new(&custom_dir).to_path_buf()
     } else {
-        vento_dir = [home, Path::new(".vento").to_path_buf()].iter().collect();
-    }
+        [home, Path::new(".vento").to_path_buf()].iter().collect()
+    };
+
     let active_dir = [&vento_dir, &Path::new("active").to_path_buf()]
         .iter()
         .collect();
@@ -56,7 +56,7 @@ fn dir_config() -> Result<String> {
         _ => PathBuf::new(),
     };
 
-    if &config != &PathBuf::new() {
+    if config != PathBuf::new() {
         config.push("vento.toml");
         if config.is_file() {
             let settings = Config::builder()

@@ -24,7 +24,7 @@ use fs_extra::dir::{move_dir, CopyOptions};
 use std::fs;
 use std::path::{Path, PathBuf};
 
-pub fn take(file: &String, slot: &String) -> Result<()> {
+pub fn take(file: &String, slot: &str) -> Result<()> {
     // Takes a file or directory
     let ventodir = &common::env_config()?[0];
 
@@ -35,7 +35,7 @@ pub fn take(file: &String, slot: &String) -> Result<()> {
             "Vento not initialized. Run \"vento -i\" to initialize Vento.".red()
         );
     };
-    let slotdir: PathBuf = match slot.as_str() {
+    let slotdir: PathBuf = match slot {
         "active" | "a" => common::env_config()?[1].clone(),
         "inactive" | "i" => common::env_config()?[2].clone(),
         _ => PathBuf::new(),
@@ -92,7 +92,7 @@ pub fn take(file: &String, slot: &String) -> Result<()> {
     Ok(())
 }
 
-pub fn drop(file: &String, slot: &String, dest: PathBuf) -> Result<()> {
+pub fn drop(file: &String, slot: &str, dest: PathBuf) -> Result<()> {
     // Drops a file or directory
     let ventodir = &common::env_config()?[0];
 
@@ -104,7 +104,7 @@ pub fn drop(file: &String, slot: &String, dest: PathBuf) -> Result<()> {
         );
     };
 
-    let slotdir: PathBuf = match slot.as_str() {
+    let slotdir: PathBuf = match slot {
         "active" | "a" => common::env_config()?[1].clone(),
         "inactive" | "i" => common::env_config()?[2].clone(),
         _ => PathBuf::new(),
