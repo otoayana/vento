@@ -23,6 +23,11 @@ use std::env;
 use std::fs::{create_dir_all, File};
 use std::io::Write;
 
+struct Page {
+    content: String,
+    file: String,
+}
+
 fn main() -> Result<()> {
     if cfg!(unix) {
         let pages = [vento()?, take()?, drop()?, ventotoml()?];
@@ -32,16 +37,16 @@ fn main() -> Result<()> {
         create_dir_all(tempdir.clone())?;
 
         for page in &pages {
-            let tempfile = tempdir.join(page.clone().1);
+            let tempfile = tempdir.join(&page.file);
             let mut file = File::create(tempfile).unwrap();
-            write!(&mut file, "{}", page.clone().0).unwrap();
+            write!(&mut file, "{}", &page.content).unwrap();
         }
     }
     Ok(())
 }
 
-fn vento() -> Result<(String, String)> {
-    let page = Manual::new("vento")
+fn vento() -> Result<Page> {
+    let content = Manual::new("vento")
         .about("a CLI inventory for your files")
         .author(Author::new("Lux Aliaga").email("they@mint.lgbt"))
         .description("List files and directories in the currently active inventory, the files in SLOT, the files in DIRECTORY or the files in DIRECTORY in SLOT.")
@@ -76,11 +81,14 @@ fn vento() -> Result<(String, String)> {
         )
         .render();
 
-    Ok((page, String::from("vento.1")))
+    Ok(Page {
+        content,
+        file: String::from("vento.1"),
+    })
 }
 
-fn take() -> Result<(String, String)> {
-    let page = Manual::new("take")
+fn take() -> Result<Page> {
+    let content = Manual::new("take")
         .about("a file grabber for Vento")
         .author(Author::new("Lux Aliaga").email("they@mint.lgbt"))
         .description("Take FILE and put it in the inventory.")
@@ -93,11 +101,14 @@ fn take() -> Result<(String, String)> {
         .arg(Arg::new("FILE"))
         .render();
 
-    Ok((page, String::from("take.1")))
+    Ok(Page {
+        content,
+        file: String::from("take.1"),
+    })
 }
 
-fn drop() -> Result<(String, String)> {
-    let page = Manual::new("drop")
+fn drop() -> Result<Page> {
+    let content = Manual::new("drop")
         .about("a file dropper for Vento")
         .author(Author::new("Lux Aliaga").email("they@mint.lgbt"))
         .description("Take FILE off the inventory and drop it in DESTINATION.")
@@ -111,11 +122,14 @@ fn drop() -> Result<(String, String)> {
         .arg(Arg::new("[DESTINATION]"))
         .render();
 
-    Ok((page, String::from("drop.1")))
+    Ok(Page {
+        content,
+        file: String::from("drop.1"),
+    })
 }
 
-fn ventotoml() -> Result<(String, String)> {
-    let page = Manual::new("vento.toml")
+fn ventotoml() -> Result<Page> {
+    let content = Manual::new("vento.toml")
         .about("configuration file for Vento")
         .author(Author::new("Lux Aliaga").email("they@mint.lgbt"))
         .description("This is the configuration file for the vento(1), take(1) and drop(1) utilities. Its presence and all its directives are optional.")
@@ -131,5 +145,8 @@ fn ventotoml() -> Result<(String, String)> {
         )
         .render();
 
-    Ok((page, String::from("vento.toml.1")))
+    Ok(Page {
+        content,
+        file: String::from("vento.toml.1"),
+    })
 }
