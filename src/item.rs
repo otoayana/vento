@@ -18,7 +18,7 @@
  */
 
 use super::common;
-use anyhow::{bail, Context, Result};
+use anyhow::{bail, Result};
 use colored::Colorize;
 use fs_extra::dir::{move_dir, CopyOptions};
 use std::fs;
@@ -80,11 +80,11 @@ pub fn take(file: &String, slot: &str) -> Result<()> {
 
     if sourcepath.is_file() | sourcepath.is_symlink() {
         // Checks the path's file type
-        fs::copy(&file, &destpath).context("Vento was unable to copy the file.")?;
-        fs::remove_file(&file).context("Vento was unable to remove the file.")?;
+        fs::copy(&file, &destpath)?;
+        fs::remove_file(&file)?;
     } else if sourcepath.is_dir() {
         let options = CopyOptions::new();
-        move_dir(&file, &slotdir, &options).context("Vento was unable to move the directory.")?;
+        move_dir(&file, &slotdir, &options)?;
     } else {
         bail!("{}", "No such file or directory.".red());
     }
@@ -138,13 +138,12 @@ pub fn drop(file: &String, slot: &str, dest: PathBuf) -> Result<()> {
 
     if sourcepath.is_file() | sourcepath.is_symlink() {
         // Checks the path's file type
-        fs::copy(&sourcepath, &destpath).context("Vento was unable to copy the file.")?;
-        fs::remove_file(&sourcepath).context("Vento was unable to remove the file.")?;
+        fs::copy(&sourcepath, &destpath)?;
+        fs::remove_file(&sourcepath)?;
     } else if sourcepath.is_dir() {
         let destpath: PathBuf = Path::new(&dest).to_path_buf();
         let options = CopyOptions::new();
-        move_dir(&sourcepath, &destpath, &options)
-            .context("Vento was unable to move the directory.")?;
+        move_dir(&sourcepath, &destpath, &options)?;
     } else {
         bail!("{}", "No such file or directory.".red());
     }

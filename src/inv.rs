@@ -34,9 +34,7 @@ pub fn init() -> Result<()> {
         let mut answer = String::new();
         print!("⚠️  {} Vento has already been initialized. Reinitializing will delete all files on the directory for Vento. Do you wish to proceed? (y/N) ", "WARNING:".bold().red());
         let _ = io::stdout().flush();
-        io::stdin()
-            .read_line(&mut answer)
-            .context("Failed to read input")?;
+        io::stdin().read_line(&mut answer)?;
         match answer.as_str().trim() {
             "y" | "Y" => fs::remove_dir_all(&ventodir)?,
             _ => process::exit(0),
@@ -190,10 +188,8 @@ fn create_slots() -> Result<()> {
     let active = &common::env_config()?.active_dir;
     let inactive = &common::env_config()?.inactive_dir;
 
-    let initialize_error = "Vento was unable to initalize. Do you have the correct permissions?";
-
-    fs::create_dir_all(active).context(initialize_error)?;
-    fs::create_dir_all(inactive).context(initialize_error)?;
+    fs::create_dir_all(active)?;
+    fs::create_dir_all(inactive)?;
 
     println!("🎉 {}", "Vento has been succesfully initialized!".green());
     Ok(())
