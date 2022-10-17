@@ -22,7 +22,13 @@ use colored::Colorize;
 use config::Config;
 use std::path::{Path, PathBuf};
 
-pub fn env_config() -> Result<Vec<PathBuf>> {
+pub struct Settings {
+    pub vento_dir: PathBuf,
+    pub active_dir: PathBuf,
+    pub inactive_dir: PathBuf,
+}
+
+pub fn env_config() -> Result<Settings> {
     // Configures the directories for Vento
     let home = match dirs::home_dir() {
         Option::Some(dir) => dir,
@@ -45,7 +51,11 @@ pub fn env_config() -> Result<Vec<PathBuf>> {
         .iter()
         .collect();
 
-    Ok(vec![vento_dir, active_dir, inactive_dir])
+    Ok(Settings {
+        vento_dir,
+        active_dir,
+        inactive_dir,
+    })
 }
 
 fn dir_config() -> Result<String> {

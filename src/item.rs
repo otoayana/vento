@@ -26,7 +26,7 @@ use std::path::{Path, PathBuf};
 
 pub fn take(file: &String, slot: &str) -> Result<()> {
     // Takes a file or directory
-    let ventodir = &common::env_config()?[0];
+    let ventodir = &common::env_config()?.vento_dir;
 
     if !ventodir.is_dir() {
         // Detects if Vento hasn't been initialized and bails if so
@@ -36,8 +36,8 @@ pub fn take(file: &String, slot: &str) -> Result<()> {
         );
     };
     let slotdir: PathBuf = match slot {
-        "active" | "a" => common::env_config()?[1].clone(),
-        "inactive" | "i" => common::env_config()?[2].clone(),
+        "active" | "a" => common::env_config()?.active_dir.clone(),
+        "inactive" | "i" => common::env_config()?.inactive_dir.clone(),
         _ => PathBuf::new(),
     };
 
@@ -94,7 +94,7 @@ pub fn take(file: &String, slot: &str) -> Result<()> {
 
 pub fn drop(file: &String, slot: &str, dest: PathBuf) -> Result<()> {
     // Drops a file or directory
-    let ventodir = &common::env_config()?[0];
+    let ventodir = &common::env_config()?.vento_dir;
 
     if !ventodir.is_dir() {
         // Detects if Vento hasn't been initialized and bails if so
@@ -105,8 +105,8 @@ pub fn drop(file: &String, slot: &str, dest: PathBuf) -> Result<()> {
     };
 
     let slotdir: PathBuf = match slot {
-        "active" | "a" => common::env_config()?[1].clone(),
-        "inactive" | "i" => common::env_config()?[2].clone(),
+        "active" | "a" => common::env_config()?.active_dir.clone(),
+        "inactive" | "i" => common::env_config()?.inactive_dir.clone(),
         _ => PathBuf::new(),
     };
 

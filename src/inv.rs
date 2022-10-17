@@ -27,7 +27,7 @@ use std::{fs, process};
 
 pub fn init() -> Result<()> {
     // Initializes Vento
-    let ventodir = &common::env_config()?[0];
+    let ventodir = &common::env_config()?.vento_dir;
 
     if ventodir.is_dir() {
         // Checks if Vento has already been initialized and prompts the user if they want to initialize it again
@@ -49,7 +49,7 @@ pub fn init() -> Result<()> {
 
 pub fn list(slot: &str, dir: &str) -> Result<()> {
     // Lists files in inventory
-    let ventodir = &common::env_config()?[0];
+    let ventodir = &common::env_config()?.vento_dir;
 
     if !ventodir.is_dir() {
         // Detects if Vento hasn't been initialized and bails if so
@@ -60,8 +60,8 @@ pub fn list(slot: &str, dir: &str) -> Result<()> {
     }
 
     let mut slotdir: PathBuf = match slot {
-        "active" | "a" => common::env_config()?[1].clone(),
-        "inactive" | "i" => common::env_config()?[2].clone(),
+        "active" | "a" => common::env_config()?.active_dir.clone(),
+        "inactive" | "i" => common::env_config()?.inactive_dir.clone(),
         _ => PathBuf::new(),
     };
 
@@ -168,9 +168,9 @@ pub fn list(slot: &str, dir: &str) -> Result<()> {
 
 pub fn switch() -> Result<()> {
     // Switches between inventory slots
-    let ventodir = &common::env_config()?[0];
-    let active = &common::env_config()?[1];
-    let inactive = &common::env_config()?[2];
+    let ventodir = &common::env_config()?.vento_dir;
+    let active = &common::env_config()?.active_dir;
+    let inactive = &common::env_config()?.inactive_dir;
     let temp: PathBuf = [ventodir.to_path_buf(), Path::new("temp").to_path_buf()]
         .iter()
         .collect();
@@ -187,8 +187,8 @@ pub fn switch() -> Result<()> {
 
 fn create_slots() -> Result<()> {
     // Used only on init. Creates all required directories
-    let active = &common::env_config()?[1];
-    let inactive = &common::env_config()?[2];
+    let active = &common::env_config()?.active_dir;
+    let inactive = &common::env_config()?.inactive_dir;
 
     let initialize_error = "Vento was unable to initalize. Do you have the correct permissions?";
 
