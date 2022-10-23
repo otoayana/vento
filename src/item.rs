@@ -36,8 +36,8 @@ pub fn take(file: &String, slot: &str) -> Result<()> {
         );
     };
     let slotdir: PathBuf = match slot {
-        "active" | "a" => common::env_config()?.active_dir.clone(),
-        "inactive" | "i" => common::env_config()?.inactive_dir.clone(),
+        "active" | "a" => common::env_config()?.active_dir,
+        "inactive" | "i" => common::env_config()?.inactive_dir,
         _ => PathBuf::new(),
     };
 
@@ -102,8 +102,8 @@ pub fn drop(file: &String, slot: &str, dest: PathBuf) -> Result<()> {
     };
 
     let slotdir: PathBuf = match slot {
-        "active" | "a" => common::env_config()?.active_dir.clone(),
-        "inactive" | "i" => common::env_config()?.inactive_dir.clone(),
+        "active" | "a" => common::env_config()?.active_dir,
+        "inactive" | "i" => common::env_config()?.inactive_dir,
         _ => PathBuf::new(),
     };
 

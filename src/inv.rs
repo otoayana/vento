@@ -58,8 +58,8 @@ pub fn list(slot: &str, dir: &str) -> Result<()> {
     }
 
     let mut slotdir: PathBuf = match slot {
-        "active" | "a" => common::env_config()?.active_dir.clone(),
-        "inactive" | "i" => common::env_config()?.inactive_dir.clone(),
+        "active" | "a" => common::env_config()?.active_dir,
+        "inactive" | "i" => common::env_config()?.inactive_dir,
         _ => PathBuf::new(),
     };
 
