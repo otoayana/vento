@@ -55,20 +55,10 @@ pub fn take(file: &String, slot: &str) -> Result<()> {
     };
 
     let sourcepath: PathBuf = Path::new(&file).to_path_buf();
-    let destpath: PathBuf = [
-        &slotdir,
-        &Path::new(
-            &Path::new(&file)
-                .file_name()
-                .unwrap()
-                .to_os_string()
-                .to_str()
-                .unwrap(),
-        )
-        .to_path_buf(),
-    ]
-    .iter()
-    .collect();
+    let mut sourcelocation: PathBuf = fs::canonicalize(&sourcepath)?;
+    sourcelocation.pop();
+    let filename = Path::new(&file).file_name().unwrap().to_str().unwrap();
+    let destpath: PathBuf = [&slotdir, &sourcepath].iter().collect();
 
     if Path::exists(&destpath) {
         // Checks if there's a file with the same name in the inventory.
@@ -88,6 +78,13 @@ pub fn take(file: &String, slot: &str) -> Result<()> {
     } else {
         bail!("{}", "No such file or directory.".red());
     }
+
+    println!(
+        "✅ {} {} {} ",
+        "Took".green(),
+        &filename.bold(),
+        format!("from {}", &sourcelocation.to_str().unwrap()).green()
+    );
 
     Ok(())
 }
@@ -124,7 +121,7 @@ pub fn drop(file: &String, slot: &str, dest: PathBuf) -> Result<()> {
     };
 
     let sourcepath: PathBuf = [&slotdir, &Path::new(file).to_path_buf()].iter().collect();
-    let destpath: PathBuf = [
+    let mut destpath: PathBuf = [
         Path::new(&dest).to_path_buf(),
         Path::new(file).to_path_buf(),
     ]
@@ -147,5 +144,15 @@ pub fn drop(file: &String, slot: &str, dest: PathBuf) -> Result<()> {
     } else {
         bail!("{}", "No such file or directory.".red());
     }
+
+    destpath.pop();
+
+    println!(
+        "✅ {} {} {} ",
+        "Dropped".green(),
+        &file.bold(),
+        format!("into {}", &destpath.to_str().unwrap()).green()
+    );
+
     Ok(())
 }
