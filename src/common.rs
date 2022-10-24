@@ -20,12 +20,25 @@
 use anyhow::{bail, Result};
 use colored::Colorize;
 use config::Config;
+use std::fs::File;
+use std::io::Write;
 use std::path::{Path, PathBuf};
 
 pub struct Settings {
     pub vento_dir: PathBuf,
     pub active_dir: PathBuf,
     pub inactive_dir: PathBuf,
+}
+
+pub struct HistoryData {
+    pub path: PathBuf,
+    pub file: String,
+    pub action: Action,
+}
+
+pub enum Action {
+    Take,
+    Drop,
 }
 
 pub fn env_config() -> Result<Settings> {
@@ -84,4 +97,25 @@ fn dir_config() -> Result<String> {
     };
 
     Ok(result)
+}
+
+pub fn history(data: HistoryData) -> Result<()> {
+    let mut last_path = env_config()?.vento_dir;
+    last_path.push("last");
+    let mut last_file = File::create(last_path)?;
+
+    write!(
+        &mut last_file,
+        "{}
+{}
+{}",
+        data.path.to_str().unwrap(),
+        data.file,
+        match data.action {
+            Action::Take => "take",
+            Action::Drop => "drop",
+        }
+    )?;
+
+    Ok(())
 }

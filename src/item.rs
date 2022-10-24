@@ -79,6 +79,12 @@ pub fn take(file: &String, slot: &str) -> Result<()> {
         bail!("{}", "No such file or directory.".red());
     }
 
+    common::history(common::HistoryData {
+        path: sourcelocation.clone(),
+        file: String::from(filename),
+        action: common::Action::Take,
+    })?;
+
     println!(
         "✅ {} {} {} ",
         "Took".green(),
@@ -146,6 +152,12 @@ pub fn drop(file: &String, slot: &str, dest: PathBuf) -> Result<()> {
     }
 
     destpath.pop();
+
+    common::history(common::HistoryData {
+        path: destpath.clone(),
+        file: String::from(file),
+        action: common::Action::Drop,
+    })?;
 
     println!(
         "✅ {} {} {} ",
