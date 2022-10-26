@@ -29,6 +29,7 @@ pub fn vento() -> Result<()> {
 {}
     - {}: Lists files in selected inventory
     - {}: Switches slots
+    - {}: Undoes the last action
     - {}: Initializes Vento
     - {}: Displays this message",
         "Vento".bold().blue(),
@@ -37,6 +38,7 @@ pub fn vento() -> Result<()> {
             .bold()
             .green(),
         "vento ( -c | --switch )".bold().green(),
+        "vento ( -u | --undo )".bold().green(),
         "vento ( -i | --init )".bold().green(),
         "vento ( -h | --help )".bold().green()
     );

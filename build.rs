@@ -58,6 +58,12 @@ fn vento() -> Result<Page> {
         )
         .flag(
             Flag::new()
+                .short("-u")
+                .long("--undo")
+                .help("Undoes the last action"),
+        )
+        .flag(
+            Flag::new()
                 .short("-i")
                 .long("--init")
                 .help("Initializes Vento with all its respective directories"),
