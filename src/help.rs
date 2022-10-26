@@ -20,8 +20,8 @@
 use anyhow::Result;
 use colored::Colorize;
 
+/// Displays the help message for the vento command
 pub fn vento() -> Result<()> {
-    // A quick guide to move around in Vento
     println!(
         "{}, a CLI inventory for your files
 © 2022 Lux Aliaga. Licensed under GPLv3
@@ -43,8 +43,8 @@ pub fn vento() -> Result<()> {
     Ok(())
 }
 
+/// Displays the help message for the take command
 pub fn take() -> Result<()> {
-    // A quick guide to move around in Take
     println!(
         "{}, a file grabber for Vento
 © 2022 Lux Aliaga. Licensed under GPLv3
@@ -62,8 +62,8 @@ pub fn take() -> Result<()> {
     Ok(())
 }
 
+/// Displays the help message for the drop command
 pub fn drop() -> Result<()> {
-    // A quick guide to move around in Drop
     println!(
         "{}, a file dropper for Vento
 © 2022 Lux Aliaga. Licensed under GPLv3

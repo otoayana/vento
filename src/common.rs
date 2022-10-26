@@ -42,8 +42,8 @@ pub enum Action {
     Drop,
 }
 
+/// Provides required variables for Vento
 pub fn env_config() -> Result<Settings> {
-    // Configures the directories for Vento
     let home = match dirs::home_dir() {
         Option::Some(dir) => dir,
         _ => PathBuf::new(),
@@ -100,6 +100,7 @@ fn dir_config() -> Result<String> {
     Ok(result)
 }
 
+/// Writes an action into the history file
 pub fn history(data: HistoryData) -> Result<()> {
     let mut last_path = env_config()?.vento_dir;
     last_path.push("last");

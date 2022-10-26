@@ -25,8 +25,8 @@ use std::io::{self, Write};
 use std::path::{Path, PathBuf};
 use std::{fs, process};
 
+/// Initializes Vento by creating the respective directories it will use
 pub fn init() -> Result<()> {
-    // Initializes Vento
     let ventodir = &common::env_config()?.vento_dir;
 
     if ventodir.is_dir() {
@@ -45,8 +45,8 @@ pub fn init() -> Result<()> {
     Ok(())
 }
 
+/// Lists files in the provided slot and/or directory
 pub fn list(slot: &str, dir: &str) -> Result<()> {
-    // Lists files in inventory
     let ventodir = &common::env_config()?.vento_dir;
 
     if !ventodir.is_dir() {
@@ -164,8 +164,8 @@ pub fn list(slot: &str, dir: &str) -> Result<()> {
     Ok(())
 }
 
+/// Switches inevntory slots between each other, making the currently active inventory inactive and viceversa
 pub fn switch() -> Result<()> {
-    // Switches between inventory slots
     let ventodir = &common::env_config()?.vento_dir;
     let active = &common::env_config()?.active_dir;
     let inactive = &common::env_config()?.inactive_dir;
@@ -183,8 +183,8 @@ pub fn switch() -> Result<()> {
     Ok(())
 }
 
+// Used only on init. Creates all required directories
 fn create_slots() -> Result<()> {
-    // Used only on init. Creates all required directories
     let active = &common::env_config()?.active_dir;
     let inactive = &common::env_config()?.inactive_dir;
 

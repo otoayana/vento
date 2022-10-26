@@ -24,8 +24,8 @@ use fs_extra::dir::{move_dir, CopyOptions};
 use std::fs;
 use std::path::{Path, PathBuf};
 
+/// Takes a file or directory and stores it in an inventory slot
 pub fn take(file: &String, slot: &str, message: bool) -> Result<()> {
-    // Takes a file or directory
     let ventodir = &common::env_config()?.vento_dir;
 
     if !ventodir.is_dir() {
@@ -100,6 +100,7 @@ pub fn take(file: &String, slot: &str, message: bool) -> Result<()> {
     Ok(())
 }
 
+/// Drops a file or directory and stores it in an inventory slot
 pub fn drop(file: &String, slot: &str, dest: PathBuf, message: bool) -> Result<()> {
     // Drops a file or directory
     let ventodir = &common::env_config()?.vento_dir;
@@ -177,6 +178,7 @@ pub fn drop(file: &String, slot: &str, dest: PathBuf, message: bool) -> Result<(
     Ok(())
 }
 
+/// Undoes the last action made by Vento using the history file located on the Vento directory
 pub fn undo() -> Result<()> {
     let lastpath: PathBuf = [
         common::env_config()?.vento_dir,
@@ -209,7 +211,7 @@ pub fn undo() -> Result<()> {
         _ => bail!("Illegal action".red()),
     }
 
-    println!("✅ {}", "Last action undone".green(),);
+    println!("✅ {}", "Last action undone".green());
 
     Ok(())
 }
