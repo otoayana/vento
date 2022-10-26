@@ -59,6 +59,9 @@ $ vento
 // switching inventory slots
 $ vento -c
 
+// undoing last action
+$ vento -c
+
 // taking a file or directory
 $ take <file|directory>
 
