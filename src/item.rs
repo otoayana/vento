@@ -24,7 +24,7 @@ use fs_extra::dir::{move_dir, CopyOptions};
 use std::fs;
 use std::path::{Path, PathBuf};
 
-pub fn take(file: &String, slot: &str) -> Result<()> {
+pub fn take(file: &String, slot: &str, message: bool) -> Result<()> {
     // Takes a file or directory
     let ventodir = &common::env_config()?.vento_dir;
 
@@ -58,7 +58,9 @@ pub fn take(file: &String, slot: &str) -> Result<()> {
     let mut sourcelocation: PathBuf = fs::canonicalize(&sourcepath)?;
     sourcelocation.pop();
     let filename = Path::new(&file).file_name().unwrap().to_str().unwrap();
-    let destpath: PathBuf = [&slotdir, &sourcepath].iter().collect();
+    let destpath: PathBuf = [&slotdir, &Path::new(&filename).to_path_buf()]
+        .iter()
+        .collect();
 
     if Path::exists(&destpath) {
         // Checks if there's a file with the same name in the inventory.
@@ -82,20 +84,23 @@ pub fn take(file: &String, slot: &str) -> Result<()> {
     common::history(common::HistoryData {
         path: sourcelocation.clone(),
         file: String::from(filename),
+        slot: String::from(slot),
         action: common::Action::Take,
     })?;
 
-    println!(
-        "✅ {} {} {} ",
-        "Took".green(),
-        &filename.bold(),
-        format!("from {}", &sourcelocation.to_str().unwrap()).green()
-    );
+    if message {
+        println!(
+            "✅ {} {} {} ",
+            "Took".green(),
+            &filename.bold(),
+            format!("from {}", &sourcelocation.to_str().unwrap()).green()
+        );
+    }
 
     Ok(())
 }
 
-pub fn drop(file: &String, slot: &str, dest: PathBuf) -> Result<()> {
+pub fn drop(file: &String, slot: &str, dest: PathBuf, message: bool) -> Result<()> {
     // Drops a file or directory
     let ventodir = &common::env_config()?.vento_dir;
 
@@ -156,15 +161,55 @@ pub fn drop(file: &String, slot: &str, dest: PathBuf) -> Result<()> {
     common::history(common::HistoryData {
         path: destpath.clone(),
         file: String::from(file),
+        slot: String::from(slot),
         action: common::Action::Drop,
     })?;
 
-    println!(
-        "✅ {} {} {} ",
-        "Dropped".green(),
-        &file.bold(),
-        format!("into {}", &destpath.to_str().unwrap()).green()
-    );
+    if message {
+        println!(
+            "✅ {} {} {} ",
+            "Dropped".green(),
+            &file.bold(),
+            format!("into {}", &destpath.to_str().unwrap()).green()
+        );
+    };
+
+    Ok(())
+}
+
+pub fn undo() -> Result<()> {
+    let lastpath: PathBuf = [
+        common::env_config()?.vento_dir,
+        Path::new("last").to_path_buf(),
+    ]
+    .iter()
+    .collect();
+
+    let lastfile = fs::read_to_string(lastpath)?;
+
+    let mut contents = vec![];
+
+    for line in lastfile.lines() {
+        contents.push(line);
+    }
+
+    if contents.len() != 4 {
+        bail!("Invalid history length".red());
+    }
+
+    match contents[3] {
+        "take" => {
+            let destpath = Path::new(contents[0]).to_path_buf();
+            drop(&String::from(contents[1]), contents[2], destpath, false)?;
+        }
+        "drop" => {
+            let path = vec![contents[0], contents[1]].join("/");
+            take(&path, contents[2], false)?;
+        }
+        _ => bail!("Illegal action".red()),
+    }
+
+    println!("✅ {}", "Last action undone".green(),);
 
     Ok(())
 }

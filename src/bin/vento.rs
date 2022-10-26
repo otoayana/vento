@@ -20,7 +20,7 @@
 use anyhow::{bail, Result};
 use colored::Colorize;
 use std::env;
-use vento::{help, inv};
+use vento::{help, inv, item};
 
 fn main() -> Result<()> {
     // Handles args in Vento
@@ -39,6 +39,7 @@ fn main() -> Result<()> {
                 "-h" | "--help" => help::vento()?,
                 "-i" | "--init" => inv::init()?,
                 "-c" | "--switch" => inv::switch()?,
+                "-u" | "--undo" => item::undo()?,
                 "-s" => match args.len() {
                     4 => inv::list(&args[2], &args[3])?,
                     3 => inv::list(&args[2], "")?,

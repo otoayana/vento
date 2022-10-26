@@ -29,7 +29,7 @@ fn main() -> Result<()> {
         if args[1].contains("--slot=") {
             // Checks if the user has provided the long argument "--slot="
             match args.len() {
-                3 => item::take(&args[2], &args[1].replace("--slot=", ""))?,
+                3 => item::take(&args[2], &args[1].replace("--slot=", ""), true)?,
                 2 => bail!("{}", "You need to specify a file".red()),
                 _ => bail!("{}", "Too many arguments".red()),
             };
@@ -37,13 +37,13 @@ fn main() -> Result<()> {
             match args[1].as_str() {
                 "--help" | "-h" => help::take()?,
                 "-s" => match args.len() {
-                    4 => item::take(&args[3], &args[2])?,
+                    4 => item::take(&args[3], &args[2], true)?,
                     3 => bail!("{}", "You need to specify a file".red()),
                     2 => bail!("{}", "You need to specify a slot".red()),
                     _ => bail!("{}", "Too many arguments".red()),
                 },
                 _ => match args.len() {
-                    2 => item::take(&args[1], &String::from("active"))?,
+                    2 => item::take(&args[1], &String::from("active"), true)?,
                     _ => bail!("{}", "Too many arguments".red()),
                 },
             }

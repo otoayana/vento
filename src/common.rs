@@ -33,6 +33,7 @@ pub struct Settings {
 pub struct HistoryData {
     pub path: PathBuf,
     pub file: String,
+    pub slot: String,
     pub action: Action,
 }
 
@@ -108,9 +109,11 @@ pub fn history(data: HistoryData) -> Result<()> {
         &mut last_file,
         "{}
 {}
+{}
 {}",
         data.path.to_str().unwrap(),
         data.file,
+        data.slot,
         match data.action {
             Action::Take => "take",
             Action::Drop => "drop",

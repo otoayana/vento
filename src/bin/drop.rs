@@ -30,11 +30,11 @@ fn main() -> Result<()> {
         if args[1].contains("--slot=") {
             // Checks if the user has provided the long argument "--slot="
             match args.len() {
-                4 => item::drop(&args[2], &args[1].as_str().replace("--slot=", ""), Path::new(&args[4]).to_path_buf())?,
+                4 => item::drop(&args[2], &args[1].as_str().replace("--slot=", ""), Path::new(&args[4]).to_path_buf(), true)?,
                 3 => item::drop(&args[2], &args[1].as_str().replace("--slot=", ""), match env::current_dir() {
                     Ok(dir) => dir,
                     Err(_) => bail!("{}", "Vento was unable to detect your current directory. Have you configured your environment correctly?".red())
-                })?,
+                }, true)?,
                 2 => bail!("{}", "You need to specify a file".red()),
                 _ => bail!("{}", "Too many arguments".red()),
             };
@@ -42,21 +42,21 @@ fn main() -> Result<()> {
             match args[1].as_str() {
                 "--help" | "-h" => help::drop()?,
                 "-s" => match args.len() {
-                    5 => item::drop(&args[3], &args[2], Path::new(&args[4]).to_path_buf())?,
+                    5 => item::drop(&args[3], &args[2], Path::new(&args[4]).to_path_buf(), true)?,
                     4 => item::drop(&args[3], &args[2], match env::current_dir() {
                         Ok(dir) => dir,
                         Err(_) => bail!("{}", "Vento was unable to detect your current directory. Have you configured your environment correctly?".red())
-                    })?,
+                    }, true)?,
                     3 => bail!("{}", "You need to specify a file".red()),
                     2 => bail!("{}", "You need to specify a slot".red()),
                     _ => bail!("{}", "Too many arguments".red()),
                 },
                 _ => match args.len() {
-                    3 => item::drop(&args[1], &String::from("active"), Path::new(&args[2]).to_path_buf())?,
+                    3 => item::drop(&args[1], &String::from("active"), Path::new(&args[2]).to_path_buf(), true)?,
                     2 => item::drop(&args[1], &String::from("active"), match env::current_dir() {
                         Ok(dir) => dir,
                         Err(_) => bail!("{}", "Vento was unable to detect your current directory. Have you configured your environment correctly?".red())
-                    })?,
+                    }, true)?,
                     _ => bail!("{}", "Too many arguments".red()),
                 },
             }
