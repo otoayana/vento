@@ -16,7 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
  */
-use crate::common;
+
+use crate::{common, inv, item};
 use anyhow::{bail, Result};
 use colored::Colorize;
 use std::fs;
@@ -46,14 +47,14 @@ pub fn undo() -> Result<()> {
     match contents[3] {
         "take" => {
             let destpath = Path::new(contents[0]).to_path_buf();
-            crate::item::drop(&String::from(contents[1]), contents[2], destpath, false)?;
+            item::drop(&String::from(contents[1]), contents[2], destpath, false)?;
         }
         "drop" => {
             let path = vec![contents[0], contents[1]].join("/");
-            crate::item::take(&path, contents[2], false)?;
+            item::take(&path, contents[2], false)?;
         }
         "switch" => {
-            crate::inv::switch()?;
+            inv::switch(false)?;
         }
         _ => bail!("Illegal action".red()),
     }

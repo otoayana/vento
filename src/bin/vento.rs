@@ -38,7 +38,7 @@ fn main() -> Result<()> {
             match args[1].as_str() {
                 "-h" | "--help" => help::vento()?,
                 "-i" | "--init" => inv::init()?,
-                "-c" | "--switch" => inv::switch()?,
+                "-c" | "--switch" => inv::switch(true)?,
                 "-u" | "--undo" => history::undo()?,
                 "-s" => match args.len() {
                     4 => inv::list(&args[2], &args[3])?,

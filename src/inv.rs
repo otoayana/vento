@@ -165,7 +165,7 @@ pub fn list(slot: &str, dir: &str) -> Result<()> {
 }
 
 /// Switches inevntory slots between each other, making the currently active inventory inactive and viceversa
-pub fn switch() -> Result<()> {
+pub fn switch(message: bool) -> Result<()> {
     let ventodir = &common::env_config()?.vento_dir;
     let active = &common::env_config()?.active_dir;
     let inactive = &common::env_config()?.inactive_dir;
@@ -186,7 +186,9 @@ pub fn switch() -> Result<()> {
         action: common::Action::Switch,
     })?;
 
-    println!("🎉 {}", "Switched inventory slots!".green());
+    if message {
+        println!("🎉 {}", "Switched inventory slots!".green());
+    }
     Ok(())
 }
 
