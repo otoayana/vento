@@ -71,7 +71,7 @@ pub fn drop() -> Result<()> {
 © 2022 Lux Aliaga. Licensed under GPLv3
 
 {}
-    - {}: Takes a file off the inventory and drops it.
+    - {}: Takes a file off the inventory and drops it
     - {}: Displays this message",
         "Drop".bold().blue(),
         "Usage:".bold(),

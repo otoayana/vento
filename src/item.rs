@@ -32,7 +32,7 @@ pub fn take(file: &String, slot: &str, message: bool) -> Result<()> {
         // Detects if Vento hasn't been initialized and bails if so
         bail!(
             "{}",
-            "Vento not initialized. Run \"vento -i\" to initialize Vento.".red()
+            "Vento not initialized. Run \"vento -i\" to initialize Vento".red()
         );
     };
     let slotdir: PathBuf = match slot {
@@ -46,7 +46,7 @@ pub fn take(file: &String, slot: &str, message: bool) -> Result<()> {
         bail!(
             "{}",
             format!(
-                "No such slot. Valid slots are {} and {}.",
+                "No such slot. Valid slots are {} and {}",
                 "active".green().bold(),
                 "inactive".blue().bold()
             )
@@ -78,7 +78,7 @@ pub fn take(file: &String, slot: &str, message: bool) -> Result<()> {
         let options = CopyOptions::new();
         move_dir(&file, &slotdir, &options)?;
     } else {
-        bail!("{}", "No such file or directory.".red());
+        bail!("{}", "No such file or directory".red());
     }
 
     common::history(common::HistoryData {
@@ -109,7 +109,7 @@ pub fn drop(file: &String, slot: &str, dest: PathBuf, message: bool) -> Result<(
         // Detects if Vento hasn't been initialized and bails if so
         bail!(
             "{}",
-            "Vento not initialized. Run \"vento -i\" to initialize Vento.".red()
+            "Vento not initialized. Run \"vento -i\" to initialize Vento".red()
         );
     };
 
@@ -124,7 +124,7 @@ pub fn drop(file: &String, slot: &str, dest: PathBuf, message: bool) -> Result<(
         bail!(
             "{}",
             format!(
-                "No such slot. Valid slots are {} and {}.",
+                "No such slot. Valid slots are {} and {}",
                 "active".green().bold(),
                 "inactive".blue().bold()
             )
@@ -142,7 +142,7 @@ pub fn drop(file: &String, slot: &str, dest: PathBuf, message: bool) -> Result<(
 
     if Path::exists(&destpath) {
         // Checks if there's a file with the same name in the destination path.
-        bail!("{}", "A file with the same name already exists in the destination! Try renaming it or dropping this file somewhere else.".red());
+        bail!("{}", "A file with the same name already exists in the destination! Try renaming it or dropping this file somewhere else".red());
     }
 
     if sourcepath.is_file() | sourcepath.is_symlink() {
@@ -154,7 +154,7 @@ pub fn drop(file: &String, slot: &str, dest: PathBuf, message: bool) -> Result<(
         let options = CopyOptions::new();
         move_dir(&sourcepath, &destpath, &options)?;
     } else {
-        bail!("{}", "No such file or directory.".red());
+        bail!("{}", "No such file or directory".red());
     }
 
     destpath.pop();

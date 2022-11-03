@@ -53,7 +53,7 @@ pub fn list(slot: &str, dir: &str) -> Result<()> {
         // Detects if Vento hasn't been initialized and bails if so
         bail!(
             "{}",
-            "Vento not initialized. Run \"vento -i\" to initialize Vento.".red()
+            "Vento not initialized. Run \"vento -i\" to initialize Vento".red()
         );
     }
 
@@ -70,7 +70,7 @@ pub fn list(slot: &str, dir: &str) -> Result<()> {
 
     if dir.to_string().contains("..") {
         // Basically preventing from listing anything out of bounds. ls and dir exist for that
-        bail!("{}", "Cannot access parent.".red());
+        bail!("{}", "Cannot access parent".red());
     }
 
     if !slotdir.is_dir() {
@@ -78,7 +78,7 @@ pub fn list(slot: &str, dir: &str) -> Result<()> {
         bail!(
             "{}",
             format!(
-                "No such slot or directory. Valid slots are {} and {}.",
+                "No such slot or directory. Valid slots are {} and {}",
                 "active".green().bold(),
                 "inactive".blue().bold()
             )
@@ -91,7 +91,7 @@ pub fn list(slot: &str, dir: &str) -> Result<()> {
         println!(
             "🗃️  {}",
             format!(
-                "No files in {}{}.",
+                "No files in {}{}",
                 match slot {
                     "active" => slot.bold(),
                     _ => slot.blue().bold(),
