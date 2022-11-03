@@ -179,6 +179,13 @@ pub fn switch() -> Result<()> {
     fs::rename(&inactive, &active).context(rename_error)?;
     fs::rename(&temp, &inactive).context(rename_error)?;
 
+    common::history(common::HistoryData {
+        path: PathBuf::new(),
+        file: String::new(),
+        slot: String::new(),
+        action: common::Action::Switch,
+    })?;
+
     println!("🎉 {}", "Switched inventory slots!".green());
     Ok(())
 }

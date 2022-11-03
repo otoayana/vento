@@ -19,5 +19,6 @@
 
 mod common;
 pub mod help;
+pub mod history;
 pub mod inv;
 pub mod item;

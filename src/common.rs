@@ -40,6 +40,7 @@ pub struct HistoryData {
 pub enum Action {
     Take,
     Drop,
+    Switch,
 }
 
 /// Provides required variables for Vento
@@ -118,6 +119,7 @@ pub fn history(data: HistoryData) -> Result<()> {
         match data.action {
             Action::Take => "take",
             Action::Drop => "drop",
+            Action::Switch => "switch",
         }
     )?;
 
