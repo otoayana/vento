@@ -187,7 +187,7 @@ pub fn switch(message: bool) -> Result<()> {
     })?;
 
     if message {
-        println!("🎉 {}", "Switched inventory slots!".green());
+        println!("✅ {}", "Switched inventory slots!".green());
     }
     Ok(())
 }
