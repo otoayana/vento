@@ -59,7 +59,53 @@ pub fn undo() -> Result<()> {
         _ => bail!("Illegal action".red()),
     }
 
-    println!("✅ {}", "Last action undone".green());
+    println!(
+        "✅ {}",
+        format!(
+            "{}{}{}",
+            match contents[3] {
+                "take" => "Take",
+                "drop" => "Drop",
+                "switch" => "Switch",
+                _ => "Unknown",
+            }
+            .bold(),
+            " action undone".green(),
+            match contents[3] {
+                "take" => format!(
+                    "{}{}{}{}{}{}{}",
+                    " (".green(),
+                    contents[1].bold(),
+                    ", from ".green(),
+                    contents[0],
+                    " to ".green(),
+                    match contents[2] {
+                        "active" => contents[2].green(),
+                        "inactive" => contents[2].blue(),
+                        _ => contents[2].red(),
+                    }
+                    .bold(),
+                    " slot)".green(),
+                ),
+                "drop" => format!(
+                    "{}{}{}{}{}{}{}",
+                    " (".green(),
+                    contents[1].bold(),
+                    ", from ".green(),
+                    match contents[2] {
+                        "active" => contents[2].green(),
+                        "inactive" => contents[2].blue(),
+                        _ => contents[2].red(),
+                    }
+                    .bold(),
+                    " slot to ".green(),
+                    contents[0],
+                    ")".green(),
+                ),
+                _ => String::from(""),
+            }
+        )
+    );
 
     Ok(())
 }
