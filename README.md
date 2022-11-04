@@ -60,7 +60,7 @@ $ vento
 $ vento -c
 
 // undoing last action
-$ vento -c
+$ vento -u
 
 // taking a file or directory
 $ take <file|directory>
