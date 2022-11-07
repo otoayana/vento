@@ -90,10 +90,19 @@ pub fn take(file: &String, slot: &str, message: bool) -> Result<()> {
 
     if message {
         println!(
-            "✅ {} {} {} ",
+            "✅ {} {} {} {} {} {} {}",
             "Took".green(),
             &filename.bold(),
-            format!("from {}", &sourcelocation.to_str().unwrap()).green()
+            "from".green(),
+            &sourcelocation.to_str().unwrap(),
+            "to".green(),
+            match slot {
+                "active" => slot.green(),
+                "inactive" => slot.blue(),
+                _ => slot.red(),
+            }
+            .bold(),
+            "slot".green()
         );
     }
 
@@ -168,10 +177,18 @@ pub fn drop(file: &String, slot: &str, dest: PathBuf, message: bool) -> Result<(
 
     if message {
         println!(
-            "✅ {} {} {} ",
+            "✅ {} {} {} {} {} {}",
             "Dropped".green(),
             &file.bold(),
-            format!("into {}", &destpath.to_str().unwrap()).green()
+            "from".green(),
+            match slot {
+                "active" => slot.green(),
+                "inactive" => slot.blue(),
+                _ => slot.red(),
+            }
+            .bold(),
+            "slot into".green(),
+            &destpath.to_str().unwrap()
         );
     };
 
