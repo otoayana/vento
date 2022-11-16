@@ -6,7 +6,7 @@ readme = "README.md"
 
 description = "A CLI inventory for your files"
 authors = ["Lux Aliaga <they@mint.lgbt>"]
-repository = "https://codeberg.org/nixgoat/vento"
+repository = "https://git.sr.ht/~nixgoat/vento"
 
 license = "GPL-3.0-or-later"
 keywords = ["utility", "file-manager", "inventory"]

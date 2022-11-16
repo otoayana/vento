@@ -2,7 +2,7 @@
 
 [![Latest version](https://shields.io/crates/v/vento?color=red)](https://crates.io/crates/vento)
 [![Downloads](https://shields.io/crates/d/vento)](https://crates.io/crates/vento)
-[![Licensed under GPLv3](https://shields.io/crates/l/vento)](https://codeberg.org/nixgoat/vento/src/branch/master/LICENSE.md)
+[![Licensed under GPLv3](https://shields.io/crates/l/vento)](https://git.sr.ht/~nixgoat/vento/tree/master/item/LICENSE.md)
 
 Vento is a utility which allows you to manage your files as if you're playing an old text adventure. It's made in Rust and originally inspired by [Chesapeake's Inventory](https://github.com/mothdotmonster/inventory).
 
@@ -23,7 +23,7 @@ $ cargo install vento
 Clone the repository using `git`.
 
 ```
-$ git clone https://codeberg.org/nixgoat/vento.git && cd vento
+$ git clone https://git.sr.ht/~nixgoat/vento && cd vento
 ```
 
 ### 2.a) cargo-make
@@ -84,4 +84,4 @@ $ man (command)
 ## Credits
 
 - [Chesapeake](https://moth.monster/) for the original concept
-- [jo!](https://codeberg.org/j0) for helping me with Rust concepts!
+- [jo!](https://sr.ht/~j0lol/) for helping me with Rust concepts!
