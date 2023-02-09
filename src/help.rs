@@ -24,7 +24,7 @@ use colored::Colorize;
 pub fn vento() -> Result<()> {
     println!(
         "{}, a CLI inventory for your files
-© 2022 Lux Aliaga. Licensed under GPLv3
+© 2022-2023 Lux Aliaga. Licensed under GPLv3
 
 {}
     - {}: Lists files in selected inventory
@@ -49,7 +49,7 @@ pub fn vento() -> Result<()> {
 pub fn take() -> Result<()> {
     println!(
         "{}, a file grabber for Vento
-© 2022 Lux Aliaga. Licensed under GPLv3
+© 2022-2023 Lux Aliaga. Licensed under GPLv3
 
 {}
     - {}: Takes a file and saves it in the inventory
@@ -68,7 +68,7 @@ pub fn take() -> Result<()> {
 pub fn drop() -> Result<()> {
     println!(
         "{}, a file dropper for Vento
-© 2022 Lux Aliaga. Licensed under GPLv3
+© 2022-2023 Lux Aliaga. Licensed under GPLv3
 
 {}
     - {}: Takes a file off the inventory and drops it
