@@ -17,8 +17,7 @@
  *
  */
 
-use anyhow::{bail, Result};
-use colored::Colorize;
+use anyhow::Result;
 use std::env;
 use vento::{
     error::{throw_error, ErrorType},
