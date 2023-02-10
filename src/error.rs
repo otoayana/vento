@@ -1,6 +1,6 @@
 /*
  * Vento, a CLI inventory for your files.
- * Copyright (C) 2022 Lux Aliaga
+ * Copyright (C) 2023 Lux Aliaga
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,9 +17,25 @@
  *
  */
 
-pub mod common;
-pub mod error;
-pub mod help;
-pub mod history;
-pub mod inv;
-pub mod item;
+use anyhow::{bail, Result};
+use colored::Colorize;
+
+pub enum ErrorType {
+    TooManyArgs,
+    SpecifySlot,
+    SpecifyFile,
+    NoCurrentDirectory,
+}
+
+pub fn throw_error(error: ErrorType) -> Result<()> {
+    bail!(
+        "{}",
+        match error {
+            ErrorType::TooManyArgs => "Too many arguments",
+            ErrorType::SpecifySlot => "You need to specify a file",
+            ErrorType::SpecifyFile => "You need to specify a slot",
+            ErrorType::NoCurrentDirectory => "Vento was unable to detect your current directory. Have you configured your environment correctly?",
+        }
+        .red()
+    );
+}

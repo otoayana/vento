@@ -17,9 +17,11 @@
  *
  */
 
+use crate::error::{throw_error, ErrorType};
 use anyhow::{bail, Result};
 use colored::Colorize;
 use config::Config;
+use std::env::current_dir;
 use std::fs::File;
 use std::io::Write;
 use std::path::{Path, PathBuf};
@@ -124,4 +126,18 @@ pub fn history(data: HistoryData) -> Result<()> {
     )?;
 
     Ok(())
+}
+
+/// Gets current directory for commands
+pub fn get_current_dir() -> Result<PathBuf> {
+    let currentdir = match current_dir() {
+        Ok(dir) => dir,
+        Err(_) => PathBuf::new(),
+    };
+
+    if currentdir == PathBuf::new() {
+        throw_error(ErrorType::NoCurrentDirectory)?;
+    }
+
+    Ok(currentdir)
 }

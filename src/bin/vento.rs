@@ -20,7 +20,10 @@
 use anyhow::{bail, Result};
 use colored::Colorize;
 use std::env;
-use vento::{help, history, inv};
+use vento::{
+    error::{throw_error, ErrorType},
+    help, history, inv,
+};
 
 fn main() -> Result<()> {
     // Handles args in Vento
@@ -32,7 +35,7 @@ fn main() -> Result<()> {
             match args.len() {
                 3 => inv::list(&args[1].replace("--slot=", ""), &args[2])?,
                 2 => inv::list(&args[1].replace("--slot=", ""), "")?,
-                _ => bail!("{}", "Too many arguments".red()),
+                _ => throw_error(ErrorType::TooManyArgs)?,
             };
         } else {
             match args[1].as_str() {
@@ -43,8 +46,8 @@ fn main() -> Result<()> {
                 "-s" => match args.len() {
                     4 => inv::list(&args[2], &args[3])?,
                     3 => inv::list(&args[2], "")?,
-                    2 => bail!("{}", "You need to specify a slot".red()),
-                    _ => bail!("{}", "Too many arguments".red()),
+                    2 => throw_error(ErrorType::SpecifySlot)?,
+                    _ => throw_error(ErrorType::TooManyArgs)?,
                 },
                 _ => inv::list("active", args[1].as_str())?,
             }

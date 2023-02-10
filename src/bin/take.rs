@@ -20,7 +20,10 @@
 use anyhow::{bail, Result};
 use colored::Colorize;
 use std::env;
-use vento::{help, item};
+use vento::{
+    error::{throw_error, ErrorType},
+    help, item,
+};
 
 fn main() -> Result<()> {
     // Handles args in Vento
@@ -30,21 +33,21 @@ fn main() -> Result<()> {
             // Checks if the user has provided the long argument "--slot="
             match args.len() {
                 3 => item::take(&args[2], &args[1].replace("--slot=", ""), true)?,
-                2 => bail!("{}", "You need to specify a file".red()),
-                _ => bail!("{}", "Too many arguments".red()),
+                2 => throw_error(ErrorType::SpecifyFile)?,
+                _ => throw_error(ErrorType::TooManyArgs)?,
             };
         } else {
             match args[1].as_str() {
                 "--help" | "-h" => help::take()?,
                 "-s" => match args.len() {
                     4 => item::take(&args[3], &args[2], true)?,
-                    3 => bail!("{}", "You need to specify a file".red()),
-                    2 => bail!("{}", "You need to specify a slot".red()),
-                    _ => bail!("{}", "Too many arguments".red()),
+                    3 => throw_error(ErrorType::SpecifyFile)?,
+                    2 => throw_error(ErrorType::SpecifySlot)?,
+                    _ => throw_error(ErrorType::TooManyArgs)?,
                 },
                 _ => match args.len() {
                     2 => item::take(&args[1], &String::from("active"), true)?,
-                    _ => bail!("{}", "Too many arguments".red()),
+                    _ => throw_error(ErrorType::TooManyArgs)?,
                 },
             }
         }
