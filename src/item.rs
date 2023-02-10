@@ -72,11 +72,11 @@ pub fn take(file: &String, slot: &str, message: bool) -> Result<()> {
 
     if sourcepath.is_file() | sourcepath.is_symlink() {
         // Checks the path's file type
-        fs::copy(&file, &destpath)?;
-        fs::remove_file(&file)?;
+        fs::copy(file, &destpath)?;
+        fs::remove_file(file)?;
     } else if sourcepath.is_dir() {
         let options = CopyOptions::new();
-        move_dir(&file, &slotdir, &options)?;
+        move_dir(file, &slotdir, &options)?;
     } else {
         bail!("{}", "No such file or directory".red());
     }
@@ -161,7 +161,7 @@ pub fn drop(file: &String, slot: &str, dest: PathBuf, message: bool) -> Result<(
     } else if sourcepath.is_dir() {
         let destpath: PathBuf = Path::new(&dest).to_path_buf();
         let options = CopyOptions::new();
-        move_dir(&sourcepath, &destpath, &options)?;
+        move_dir(&sourcepath, destpath, &options)?;
     } else {
         bail!("{}", "No such file or directory".red());
     }

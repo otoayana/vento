@@ -36,7 +36,7 @@ pub fn init() -> Result<()> {
         let _ = io::stdout().flush();
         io::stdin().read_line(&mut answer)?;
         match answer.as_str().trim() {
-            "y" | "Y" => fs::remove_dir_all(&ventodir)?,
+            "y" | "Y" => fs::remove_dir_all(ventodir)?,
             _ => process::exit(0),
         };
     };
@@ -175,9 +175,9 @@ pub fn switch(message: bool) -> Result<()> {
 
     let rename_error = "Vento was unable to switch slots. Try running \"vento -i\" and try again";
 
-    fs::rename(&active, &temp).context(rename_error)?;
-    fs::rename(&inactive, &active).context(rename_error)?;
-    fs::rename(&temp, &inactive).context(rename_error)?;
+    fs::rename(active, &temp).context(rename_error)?;
+    fs::rename(inactive, active).context(rename_error)?;
+    fs::rename(&temp, inactive).context(rename_error)?;
 
     common::history(common::HistoryData {
         path: PathBuf::new(),
