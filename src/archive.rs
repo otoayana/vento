@@ -40,9 +40,9 @@ pub fn export_inv(slot: &str, output: PathBuf, message: bool) -> Result<()> {
             "✅ {} {} {} {}",
             "Exported".green(),
             match slot {
-                "a" => "active",
-                "i" => "inactive",
-                _ => &slot,
+                "a" | "active" => "active".green(),
+                "i" | "inactive" => "inactive".blue(),
+                _ => slot.red(),
             }
             .bold(),
             "slot into".green(),
