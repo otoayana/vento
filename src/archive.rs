@@ -51,3 +51,21 @@ pub fn export_inv(slot: &str, output: PathBuf, message: bool) -> Result<()> {
     };
     Ok(())
 }
+
+pub fn export_install(output: PathBuf, message: bool) -> Result<()> {
+    let dir: PathBuf = common::env_config()?.vento_dir;
+
+    let archive = File::create(&output)?;
+    let enc = XzEncoder::new(archive, 9);
+    let mut tar = tar::Builder::new(enc);
+    tar.append_dir_all("", dir)?;
+
+    if message {
+        println!(
+            "✅ {} {}",
+            "Exported Vento install into".green(),
+            &output.to_str().unwrap()
+        );
+    };
+    Ok(())
+}

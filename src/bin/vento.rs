@@ -60,6 +60,11 @@ fn main() -> Result<()> {
                     2 => archive::export_inv("active", PathBuf::from("active.tar.xz"), true)?,
                     _ => throw_error(ErrorType::TooManyArgs)?,
                 },
+                "-E" | "--export-install" => match args.len() {
+                    3 => archive::export_install(PathBuf::from(&args[2]), true)?,
+                    2 => archive::export_install(PathBuf::from("vento.tar.xz"), true)?,
+                    _ => throw_error(ErrorType::TooManyArgs)?,
+                },
                 "-s" => match args.len() {
                     4 => inv::list(&args[2], &args[3])?,
                     3 => inv::list(&args[2], "")?,
