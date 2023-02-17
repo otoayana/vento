@@ -18,8 +18,9 @@
  */
 
 use anyhow::Result;
-use std::env;
+use std::{env, path::PathBuf};
 use vento::{
+    archive,
     error::{throw_error, ErrorType},
     help, history, inv,
 };
@@ -42,6 +43,23 @@ fn main() -> Result<()> {
                 "-i" | "--init" => inv::init()?,
                 "-c" | "--switch" => inv::switch(true)?,
                 "-u" | "--undo" => history::undo()?,
+                "-e" | "--export-inv" => match args.len() {
+                    4 => archive::export_inv(&args[2], PathBuf::from(&args[3]), true)?,
+                    3 => match args[2].as_str() {
+                        "active" | "a" | "inactive" | "i" => {
+                            let mut path = PathBuf::from(match args[2].as_str() {
+                                "a" => "active",
+                                "i" => "inactive",
+                                _ => &args[2],
+                            });
+                            path.set_extension("tar.xz");
+                            archive::export_inv(&args[2], path, true)?
+                        }
+                        _ => archive::export_inv("active", PathBuf::from(&args[2]), true)?,
+                    },
+                    2 => archive::export_inv("active", PathBuf::from("active.tar.xz"), true)?,
+                    _ => throw_error(ErrorType::TooManyArgs)?,
+                },
                 "-s" => match args.len() {
                     4 => inv::list(&args[2], &args[3])?,
                     3 => inv::list(&args[2], "")?,
