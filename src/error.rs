@@ -32,8 +32,8 @@ pub fn throw_error(error: ErrorType) -> Result<()> {
         "{}",
         match error {
             ErrorType::TooManyArgs => "Too many arguments",
-            ErrorType::SpecifySlot => "You need to specify a file",
-            ErrorType::SpecifyFile => "You need to specify a slot",
+            ErrorType::SpecifyFile => "You need to specify a file",
+            ErrorType::SpecifySlot => "You need to specify a slot",
             ErrorType::NoCurrentDirectory => "Vento was unable to detect your current directory. Have you configured your environment correctly?",
         }
         .red()
