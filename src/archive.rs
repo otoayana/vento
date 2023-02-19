@@ -101,3 +101,22 @@ pub fn import_inv(input: PathBuf, slot: &str, message: bool) -> Result<()> {
     };
     Ok(())
 }
+
+pub fn import_install(input: PathBuf, message: bool) -> Result<()> {
+    let dir: PathBuf = common::env_config()?.vento_dir;
+
+    let tar_xz = File::open(&input)?;
+    let tar = XzDecoder::new(tar_xz);
+    let mut archive = Archive::new(tar);
+    archive.unpack(&dir)?;
+
+    if message {
+        println!(
+            "✅ {} {} {}",
+            "Imported".green(),
+            &input.to_str().unwrap(),
+            "into Vento install".green(),
+        );
+    };
+    Ok(())
+}

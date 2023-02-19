@@ -71,6 +71,11 @@ fn main() -> Result<()> {
                     2 => throw_error(ErrorType::SpecifyFile)?,
                     _ => throw_error(ErrorType::TooManyArgs)?,
                 },
+                "-G" | "--import-install" => match args.len() {
+                    3 => archive::import_install(PathBuf::from(&args[2]), true)?,
+                    2 => throw_error(ErrorType::SpecifyFile)?,
+                    _ => throw_error(ErrorType::TooManyArgs)?,
+                },
                 "-s" => match args.len() {
                     4 => inv::list(&args[2], &args[3])?,
                     3 => inv::list(&args[2], "")?,
