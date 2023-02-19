@@ -35,6 +35,7 @@ pub enum ErrorType {
     NoFileOrDir,
 }
 
+/// Displays an error and exits
 pub fn throw_error(error: ErrorType) -> Result<()> {
     bail!(
         "{}",

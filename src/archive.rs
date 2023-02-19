@@ -25,6 +25,7 @@ use tar::Archive;
 use xz2::read::XzDecoder;
 use xz2::write::XzEncoder;
 
+/// Exports an inventory slot into an xz tarball
 pub fn export_inv(slot: &str, output: PathBuf, message: bool) -> Result<()> {
     let slotdir: PathBuf = match slot {
         "active" | "a" => common::env_config()?.active_dir,
@@ -54,6 +55,7 @@ pub fn export_inv(slot: &str, output: PathBuf, message: bool) -> Result<()> {
     Ok(())
 }
 
+/// Exports the Vento directory into an xz tarball
 pub fn export_dir(output: PathBuf, message: bool) -> Result<()> {
     let dir: PathBuf = common::env_config()?.vento_dir;
 
@@ -72,6 +74,7 @@ pub fn export_dir(output: PathBuf, message: bool) -> Result<()> {
     Ok(())
 }
 
+/// Imports an xz tarball into an inventory slot
 pub fn import_inv(input: PathBuf, slot: &str, message: bool) -> Result<()> {
     let slotdir: PathBuf = match slot {
         "active" | "a" => common::env_config()?.active_dir,
@@ -102,6 +105,7 @@ pub fn import_inv(input: PathBuf, slot: &str, message: bool) -> Result<()> {
     Ok(())
 }
 
+/// Imports an xz tarball into the Vento directory
 pub fn import_dir(input: PathBuf, message: bool) -> Result<()> {
     let dir: PathBuf = common::env_config()?.vento_dir;
 
