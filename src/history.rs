@@ -17,8 +17,12 @@
  *
  */
 
-use crate::{common, inv, item};
-use anyhow::{bail, Result};
+use crate::{
+    common,
+    error::{throw_error, ErrorType},
+    inv, item,
+};
+use anyhow::Result;
 use colored::Colorize;
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -41,7 +45,7 @@ pub fn undo() -> Result<()> {
     }
 
     if contents.len() != 4 {
-        bail!("Invalid history length".red());
+        throw_error(ErrorType::InvalidHistoryLength)?;
     }
 
     match contents[3] {
@@ -56,7 +60,7 @@ pub fn undo() -> Result<()> {
         "switch" => {
             inv::switch(false)?;
         }
-        _ => bail!("Illegal action".red()),
+        _ => throw_error(ErrorType::IllegalAction)?,
     }
 
     println!(

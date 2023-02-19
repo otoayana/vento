@@ -25,6 +25,14 @@ pub enum ErrorType {
     SpecifySlot,
     SpecifyFile,
     NoCurrentDirectory,
+    NoHomeDirectory,
+    InvalidHistoryLength,
+    IllegalAction,
+    NotInitialized,
+    NoAccessParent,
+    ExistsInventory,
+    ExistsDestination,
+    NoFileOrDir,
 }
 
 pub fn throw_error(error: ErrorType) -> Result<()> {
@@ -35,6 +43,14 @@ pub fn throw_error(error: ErrorType) -> Result<()> {
             ErrorType::SpecifyFile => "You need to specify a file",
             ErrorType::SpecifySlot => "You need to specify a slot",
             ErrorType::NoCurrentDirectory => "Vento was unable to detect your current directory. Have you configured your environment correctly?",
+            ErrorType::NoHomeDirectory => "Vento was unable to detect your home directory. Have you configured your environment correctly?",
+            ErrorType::InvalidHistoryLength => "Invalid history length",
+            ErrorType::IllegalAction => "Illegal action",
+            ErrorType::NotInitialized => "Vento not initialized. Run \"vento -i\" to initialize Vento",
+            ErrorType::NoAccessParent => "Cannot access parent",
+            ErrorType::ExistsInventory => "A file with the same name already exists in your inventory!",
+            ErrorType::ExistsDestination => "A file with the same name already exists in the destination! Try renaming it or dropping this file somewhere else",
+            ErrorType::NoFileOrDir => "No such file or directory",
         }
         .red()
     );

@@ -17,7 +17,10 @@
  *
  */
 
-use super::common;
+use super::{
+    common,
+    error::{throw_error, ErrorType},
+};
 use anyhow::{bail, Context, Result};
 use colored::Colorize;
 use size_format::SizeFormatterBinary;
@@ -51,10 +54,7 @@ pub fn list(slot: &str, dir: &str) -> Result<()> {
 
     if !ventodir.is_dir() {
         // Detects if Vento hasn't been initialized and bails if so
-        bail!(
-            "{}",
-            "Vento not initialized. Run \"vento -i\" to initialize Vento".red()
-        );
+        throw_error(ErrorType::NotInitialized)?;
     }
 
     let mut slotdir: PathBuf = match slot {
@@ -70,7 +70,7 @@ pub fn list(slot: &str, dir: &str) -> Result<()> {
 
     if dir.to_string().contains("..") {
         // Basically preventing from listing anything out of bounds. ls and dir exist for that
-        bail!("{}", "Cannot access parent".red());
+        throw_error(ErrorType::NoAccessParent)?;
     }
 
     if !slotdir.is_dir() {

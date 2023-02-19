@@ -17,7 +17,10 @@
  *
  */
 
-use super::common;
+use super::{
+    common,
+    error::{throw_error, ErrorType},
+};
 use anyhow::{bail, Result};
 use colored::Colorize;
 use fs_extra::dir::{move_dir, CopyOptions};
@@ -30,10 +33,7 @@ pub fn take(file: &String, slot: &str, message: bool) -> Result<()> {
 
     if !ventodir.is_dir() {
         // Detects if Vento hasn't been initialized and bails if so
-        bail!(
-            "{}",
-            "Vento not initialized. Run \"vento -i\" to initialize Vento".red()
-        );
+        throw_error(ErrorType::NotInitialized)?;
     };
     let slotdir: PathBuf = match slot {
         "active" | "a" => common::env_config()?.active_dir,
@@ -64,10 +64,7 @@ pub fn take(file: &String, slot: &str, message: bool) -> Result<()> {
 
     if Path::exists(&destpath) {
         // Checks if there's a file with the same name in the inventory.
-        bail!(
-            "{}",
-            "A file with the same name already exists in your inventory!".red()
-        );
+        throw_error(ErrorType::ExistsInventory)?;
     }
 
     if sourcepath.is_file() | sourcepath.is_symlink() {
@@ -78,7 +75,7 @@ pub fn take(file: &String, slot: &str, message: bool) -> Result<()> {
         let options = CopyOptions::new();
         move_dir(file, &slotdir, &options)?;
     } else {
-        bail!("{}", "No such file or directory".red());
+        throw_error(ErrorType::NoFileOrDir)?;
     }
 
     common::history(common::HistoryData {
@@ -116,10 +113,7 @@ pub fn drop(file: &String, slot: &str, dest: PathBuf, message: bool) -> Result<(
 
     if !ventodir.is_dir() {
         // Detects if Vento hasn't been initialized and bails if so
-        bail!(
-            "{}",
-            "Vento not initialized. Run \"vento -i\" to initialize Vento".red()
-        );
+        throw_error(ErrorType::NotInitialized)?;
     };
 
     let slotdir: PathBuf = match slot {
@@ -151,7 +145,7 @@ pub fn drop(file: &String, slot: &str, dest: PathBuf, message: bool) -> Result<(
 
     if Path::exists(&destpath) {
         // Checks if there's a file with the same name in the destination path.
-        bail!("{}", "A file with the same name already exists in the destination! Try renaming it or dropping this file somewhere else".red());
+        throw_error(ErrorType::ExistsDestination)?;
     }
 
     if sourcepath.is_file() | sourcepath.is_symlink() {
@@ -163,7 +157,7 @@ pub fn drop(file: &String, slot: &str, dest: PathBuf, message: bool) -> Result<(
         let options = CopyOptions::new();
         move_dir(&sourcepath, destpath, &options)?;
     } else {
-        bail!("{}", "No such file or directory".red());
+        throw_error(ErrorType::NoFileOrDir)?;
     }
 
     destpath.pop();

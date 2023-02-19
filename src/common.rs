@@ -18,8 +18,7 @@
  */
 
 use crate::error::{throw_error, ErrorType};
-use anyhow::{bail, Result};
-use colored::Colorize;
+use anyhow::Result;
 use config::Config;
 use std::env::current_dir;
 use std::fs::File;
@@ -52,7 +51,7 @@ pub fn env_config() -> Result<Settings> {
         _ => PathBuf::new(),
     };
     if home == PathBuf::new() {
-        bail!("{}", "Vento was unable to detect your home folder. Have you configured your environment correctly?".red());
+        throw_error(ErrorType::NoHomeDirectory)?;
     };
     let custom_dir = Path::new(&dir_config()?).to_path_buf();
     let vento_dir: PathBuf = if custom_dir != PathBuf::new() {
