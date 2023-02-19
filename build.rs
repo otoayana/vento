@@ -64,6 +64,30 @@ fn vento() -> Result<Page> {
         )
         .flag(
             Flag::new()
+                .short("-e")
+                .long("--export-inv")
+                .help("Exports an inventory"),
+        )
+        .flag(
+            Flag::new()
+                .short("-E")
+                .long("--export-dir")
+                .help("Exports the Vento directory"),
+        )
+        .flag(
+            Flag::new()
+                .short("-g")
+                .long("--import-inv")
+                .help("Imports an inventory archive"),
+        )
+        .flag(
+            Flag::new()
+                .short("-G")
+                .long("--import-dir")
+                .help("Imports a Vento directory archive"),
+        )
+        .flag(
+            Flag::new()
                 .short("-i")
                 .long("--init")
                 .help("Initializes Vento with all its respective directories"),

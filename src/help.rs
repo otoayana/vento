@@ -30,6 +30,10 @@ pub fn vento() -> Result<()> {
     - {}: Lists files in selected inventory
     - {}: Switches slots
     - {}: Undoes the last action
+    - {}: Exports an inventory
+    - {}: Exports the Vento directory
+    - {}: Imports an inventory archive
+    - {}: Imports a Vento directory archive
     - {}: Initializes Vento
     - {}: Displays this message",
         "Vento".bold().blue(),
@@ -39,6 +43,14 @@ pub fn vento() -> Result<()> {
             .green(),
         "vento ( -c | --switch )".bold().green(),
         "vento ( -u | --undo )".bold().green(),
+        "vento ( -e | --export-inv ) [ slot ] [ output ]"
+            .bold()
+            .green(),
+        "vento ( -E | --export-dir ) [ output ]".bold().green(),
+        "vento ( -g | --import-inv ) [ input ] [ slot ]"
+            .bold()
+            .green(),
+        "vento ( -G | --import-dir ) [ input ]".bold().green(),
         "vento ( -i | --init )".bold().green(),
         "vento ( -h | --help )".bold().green()
     );
