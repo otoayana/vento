@@ -60,9 +60,9 @@ fn main() -> Result<()> {
                     2 => archive::export_inv("active", PathBuf::from("active.tar.xz"), true)?,
                     _ => throw_error(ErrorType::TooManyArgs)?,
                 },
-                "-E" | "--export-install" => match args.len() {
-                    3 => archive::export_install(PathBuf::from(&args[2]), true)?,
-                    2 => archive::export_install(PathBuf::from("vento.tar.xz"), true)?,
+                "-E" | "--export-dir" => match args.len() {
+                    3 => archive::export_dir(PathBuf::from(&args[2]), true)?,
+                    2 => archive::export_dir(PathBuf::from("vento.tar.xz"), true)?,
                     _ => throw_error(ErrorType::TooManyArgs)?,
                 },
                 "-g" | "--import-inv" => match args.len() {
@@ -71,8 +71,8 @@ fn main() -> Result<()> {
                     2 => throw_error(ErrorType::SpecifyFile)?,
                     _ => throw_error(ErrorType::TooManyArgs)?,
                 },
-                "-G" | "--import-install" => match args.len() {
-                    3 => archive::import_install(PathBuf::from(&args[2]), true)?,
+                "-G" | "--import-dir" => match args.len() {
+                    3 => archive::import_dir(PathBuf::from(&args[2]), true)?,
                     2 => throw_error(ErrorType::SpecifyFile)?,
                     _ => throw_error(ErrorType::TooManyArgs)?,
                 },

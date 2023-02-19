@@ -54,7 +54,7 @@ pub fn export_inv(slot: &str, output: PathBuf, message: bool) -> Result<()> {
     Ok(())
 }
 
-pub fn export_install(output: PathBuf, message: bool) -> Result<()> {
+pub fn export_dir(output: PathBuf, message: bool) -> Result<()> {
     let dir: PathBuf = common::env_config()?.vento_dir;
 
     let archive = File::create(&output)?;
@@ -65,7 +65,7 @@ pub fn export_install(output: PathBuf, message: bool) -> Result<()> {
     if message {
         println!(
             "✅ {} {}",
-            "Exported Vento install into".green(),
+            "Exported Vento directory into".green(),
             &output.to_str().unwrap()
         );
     };
@@ -102,7 +102,7 @@ pub fn import_inv(input: PathBuf, slot: &str, message: bool) -> Result<()> {
     Ok(())
 }
 
-pub fn import_install(input: PathBuf, message: bool) -> Result<()> {
+pub fn import_dir(input: PathBuf, message: bool) -> Result<()> {
     let dir: PathBuf = common::env_config()?.vento_dir;
 
     let tar_xz = File::open(&input)?;
@@ -115,7 +115,7 @@ pub fn import_install(input: PathBuf, message: bool) -> Result<()> {
             "✅ {} {} {}",
             "Imported".green(),
             &input.to_str().unwrap(),
-            "into Vento install".green(),
+            "into Vento directory".green(),
         );
     };
     Ok(())
