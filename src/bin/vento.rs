@@ -65,6 +65,12 @@ fn main() -> Result<()> {
                     2 => archive::export_install(PathBuf::from("vento.tar.xz"), true)?,
                     _ => throw_error(ErrorType::TooManyArgs)?,
                 },
+                "-g" | "--import-inv" => match args.len() {
+                    4 => archive::import_inv(PathBuf::from(&args[2]), &args[3], true)?,
+                    3 => archive::import_inv(PathBuf::from(&args[2]), "active", true)?,
+                    2 => throw_error(ErrorType::SpecifyFile)?,
+                    _ => throw_error(ErrorType::TooManyArgs)?,
+                },
                 "-s" => match args.len() {
                     4 => inv::list(&args[2], &args[3])?,
                     3 => inv::list(&args[2], "")?,

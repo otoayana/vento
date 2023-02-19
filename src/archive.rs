@@ -21,6 +21,8 @@ use crate::common;
 use anyhow::Result;
 use colored::Colorize;
 use std::{fs::File, path::PathBuf};
+use tar::Archive;
+use xz2::read::XzDecoder;
 use xz2::write::XzEncoder;
 
 pub fn export_inv(slot: &str, output: PathBuf, message: bool) -> Result<()> {
@@ -65,6 +67,36 @@ pub fn export_install(output: PathBuf, message: bool) -> Result<()> {
             "✅ {} {}",
             "Exported Vento install into".green(),
             &output.to_str().unwrap()
+        );
+    };
+    Ok(())
+}
+
+pub fn import_inv(input: PathBuf, slot: &str, message: bool) -> Result<()> {
+    let slotdir: PathBuf = match slot {
+        "active" | "a" => common::env_config()?.active_dir,
+        "inactive" | "i" => common::env_config()?.inactive_dir,
+        _ => PathBuf::new(),
+    };
+
+    let tar_xz = File::open(&input)?;
+    let tar = XzDecoder::new(tar_xz);
+    let mut archive = Archive::new(tar);
+    archive.unpack(&slotdir)?;
+
+    if message {
+        println!(
+            "✅ {} {} {} {} {}",
+            "Imported".green(),
+            &input.to_str().unwrap(),
+            "into".green(),
+            match slot {
+                "a" | "active" => "active".green(),
+                "i" | "inactive" => "inactive".blue(),
+                _ => slot.red(),
+            }
+            .bold(),
+            "slot".green()
         );
     };
     Ok(())
