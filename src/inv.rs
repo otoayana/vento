@@ -35,7 +35,7 @@ pub fn init() -> Result<()> {
     if ventodir.is_dir() {
         // Checks if Vento has already been initialized and prompts the user if they want to initialize it again
         let mut answer = String::new();
-        print!("⚠️  {} Vento has already been initialized. Reinitializing will delete all files on the directory for Vento. Do you wish to proceed? (y/N) ", "WARNING:".bold().red());
+        print!("⚠️ {} Vento has already been initialized. Reinitializing will delete all files on the directory for Vento. Do you wish to proceed? (y/N) ", "WARNING:".bold().red());
         let _ = io::stdout().flush();
         io::stdin().read_line(&mut answer)?;
         match answer.as_str().trim() {
@@ -89,7 +89,7 @@ pub fn list(slot: &str, dir: &str) -> Result<()> {
     if fs::read_dir(&slotdir).unwrap().count() == 0 {
         // Detects if the slot or directory has any contents
         println!(
-            "🗃️  {}",
+            "🗃️ {}",
             format!(
                 "No files in {}{}",
                 match slot {
@@ -110,7 +110,7 @@ pub fn list(slot: &str, dir: &str) -> Result<()> {
         );
     } else {
         println!(
-            "🗃️  {}",
+            "🗃️ {}",
             format!(
                 "Files in {}{} ({}):",
                 match slot {
