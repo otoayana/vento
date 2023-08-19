@@ -19,7 +19,7 @@
 
 use crate::{
     common,
-    error::{throw_error, ErrorType},
+    message::{append_emoji, throw_error, ErrorType, EmojiType},
     inv, item,
 };
 use anyhow::Result;
@@ -64,7 +64,8 @@ pub fn undo() -> Result<()> {
     }
 
     println!(
-        "✅ {}{}{}",
+        "{}{}{}{}",
+        append_emoji(EmojiType::Success)?,
         match contents[3] {
             "take" => "Take",
             "drop" => "Drop",

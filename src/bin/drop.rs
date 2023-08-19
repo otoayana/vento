@@ -22,7 +22,7 @@ use std::env;
 use std::path::Path;
 use vento::{
     common::get_current_dir,
-    error::{throw_error, ErrorType},
+    message::{throw_error, ErrorType},
     help, item,
 };
 

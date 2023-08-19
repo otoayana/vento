@@ -20,7 +20,7 @@
 use anyhow::Result;
 use std::env;
 use vento::{
-    error::{throw_error, ErrorType},
+    message::{throw_error, ErrorType},
     help, item,
 };
 

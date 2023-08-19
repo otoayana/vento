@@ -19,7 +19,7 @@
 
 pub mod archive;
 pub mod common;
-pub mod error;
+pub mod message;
 pub mod help;
 pub mod history;
 pub mod inv;

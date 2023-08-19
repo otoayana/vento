@@ -21,7 +21,7 @@ use anyhow::Result;
 use std::{env, path::PathBuf};
 use vento::{
     archive,
-    error::{throw_error, ErrorType},
+    message::{throw_error, ErrorType},
     help, history, inv,
 };
 

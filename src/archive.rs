@@ -17,7 +17,10 @@
  *
  */
 
-use crate::common;
+use crate::{
+    common,
+    message::{append_emoji, EmojiType}
+};
 use anyhow::Result;
 use colored::Colorize;
 use std::{fs::File, path::PathBuf};
@@ -40,7 +43,8 @@ pub fn export_inv(slot: &str, output: PathBuf, message: bool) -> Result<()> {
 
     if message {
         println!(
-            "✅ {} {} {} {}",
+            "{}{} {} {} {}",
+            append_emoji(EmojiType::Success)?,
             "Exported".green(),
             match slot {
                 "a" | "active" => "active".green(),
@@ -66,7 +70,8 @@ pub fn export_dir(output: PathBuf, message: bool) -> Result<()> {
 
     if message {
         println!(
-            "✅ {} {}",
+            "{}{} {}",
+            append_emoji(EmojiType::Success)?,
             "Exported Vento directory into".green(),
             &output.to_str().unwrap()
         );
@@ -89,7 +94,8 @@ pub fn import_inv(input: PathBuf, slot: &str, message: bool) -> Result<()> {
 
     if message {
         println!(
-            "✅ {} {} {} {} {}",
+            "{}{} {} {} {} {}",
+            append_emoji(EmojiType::Success)?,
             "Imported".green(),
             &input.to_str().unwrap(),
             "into".green(),
@@ -116,7 +122,8 @@ pub fn import_dir(input: PathBuf, message: bool) -> Result<()> {
 
     if message {
         println!(
-            "✅ {} {} {}",
+            "{}{} {} {}",
+            append_emoji(EmojiType::Success)?,
             "Imported".green(),
             &input.to_str().unwrap(),
             "into Vento directory".green(),

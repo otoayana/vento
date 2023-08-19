@@ -19,7 +19,7 @@
 
 use super::{
     common,
-    error::{throw_error, ErrorType},
+    message::{throw_error, append_emoji, ErrorType, EmojiType},
 };
 use anyhow::{bail, Result};
 use colored::Colorize;
@@ -87,7 +87,8 @@ pub fn take(file: &String, slot: &str, message: bool) -> Result<()> {
 
     if message {
         println!(
-            "✅ {} {} {} {} {} {} {}",
+            "{}{} {} {} {} {} {} {}",
+            append_emoji(EmojiType::Success)?,
             "Took".green(),
             &filename.bold(),
             "from".green(),
@@ -171,7 +172,8 @@ pub fn drop(file: &String, slot: &str, dest: PathBuf, message: bool) -> Result<(
 
     if message {
         println!(
-            "✅ {} {} {} {} {} {}",
+            "{}{} {} {} {} {} {}",
+            append_emoji(EmojiType::Success)?,
             "Dropped".green(),
             &file.bold(),
             "from".green(),

@@ -17,7 +17,7 @@
  *
  */
 
-use crate::error::{throw_error, ErrorType};
+use crate::message::{throw_error, ErrorType};
 use anyhow::Result;
 use config::Config;
 use std::env::current_dir;
@@ -38,6 +38,12 @@ pub struct HistoryData {
     pub action: Action,
 }
 
+pub struct DeserializedConfig {
+    pub directory: String,
+    pub display_emoji: bool,
+    pub display_colors: bool,
+}
+
 pub enum Action {
     Take,
     Drop,
@@ -53,7 +59,7 @@ pub fn env_config() -> Result<Settings> {
     if home == PathBuf::new() {
         throw_error(ErrorType::NoHomeDirectory)?;
     };
-    let custom_dir = Path::new(&dir_config()?).to_path_buf();
+    let custom_dir = Path::new(&parse_config()?.directory).to_path_buf();
     let vento_dir: PathBuf = if custom_dir != PathBuf::new() {
         Path::new(&custom_dir).to_path_buf()
     } else {
@@ -74,9 +80,11 @@ pub fn env_config() -> Result<Settings> {
     })
 }
 
-fn dir_config() -> Result<String> {
-    // Handles reading the config file or variables for Vento.
-    let mut result = String::new();
+/// Handles reading the config file or variables for Vento.
+pub fn parse_config() -> Result<DeserializedConfig> {
+    let mut directory = String::new();
+    let mut display_emoji = true;
+    let mut display_colors = true;
     let mut config = match dirs::config_dir() {
         Option::Some(dir) => dir,
         _ => PathBuf::new(),
@@ -92,14 +100,28 @@ fn dir_config() -> Result<String> {
                 .add_source(config::Environment::with_prefix("VENTO"))
                 .build()?;
 
-            result = match settings.get_string("directory") {
+            directory = match settings.get_string("directory") {
                 Ok(value) => value,
                 Err(_) => String::new(),
+            };
+
+            display_emoji = match settings.get_bool("display_emoji") {
+                Ok(value) => value,
+                Err(_) => true,
+            };
+
+            display_colors = match settings.get_bool("display_colors") {
+                Ok(value) => value,
+                Err(_) => true,
             };
         }
     };
 
-    Ok(result)
+    Ok(DeserializedConfig {
+        directory,
+        display_emoji,
+        display_colors,
+    })
 }
 
 /// Writes an action into the history file

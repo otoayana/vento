@@ -19,6 +19,7 @@
 
 use anyhow::{bail, Result};
 use colored::Colorize;
+use crate::common::parse_config;
 
 pub enum ErrorType {
     TooManyArgs,
@@ -33,6 +34,29 @@ pub enum ErrorType {
     ExistsInventory,
     ExistsDestination,
     NoFileOrDir,
+}
+
+pub enum EmojiType {
+    Celebrate,
+    Success,
+    Warning,
+    Inventory,
+}
+
+
+pub fn append_emoji(message: EmojiType) -> Result<String> {
+    let mut output: String = String::new();
+    
+    if parse_config()?.display_emoji {
+        match message {
+            EmojiType::Celebrate => output = String::from("🎉 "),
+            EmojiType::Success => output = String::from("✅ "),
+            EmojiType::Inventory => output = String::from("🗃️ "),
+            EmojiType::Warning => output = String::from("⚠️ "),
+        };
+    }
+
+    Ok(output)
 }
 
 /// Displays an error and exits
