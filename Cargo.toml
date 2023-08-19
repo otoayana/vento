@@ -5,7 +5,7 @@ edition = "2021"
 readme = "README.md"
 
 description = "A CLI inventory for your files"
-authors = ["Lux Aliaga <they@mint.lgbt>"]
+authors = ["Lux Aliaga <lux@nixgoat.me>"]
 repository = "https://git.sr.ht/~nixgoat/vento"
 
 license = "GPL-3.0-or-later"

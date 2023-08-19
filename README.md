@@ -26,6 +26,12 @@ Clone the repository using `git`.
 $ git clone https://git.sr.ht/~nixgoat/vento && cd vento
 ```
 
+Check out to the latest stable release.
+
+```
+$ git checkout v1.2
+```
+
 ### 2.a) cargo-make
 
 This install method additionally installs the manpages for Vento. Make sure Rust, `cargo` and `cargo-make` are installed.
