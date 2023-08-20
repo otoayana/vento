@@ -19,7 +19,7 @@
 
 use super::{
     common,
-    message::{throw_error, append_emoji, ErrorType, EmojiType},
+    message::{append_emoji, throw_error, EmojiType, ErrorType},
 };
 use anyhow::{bail, Result};
 use colored::Colorize;

@@ -19,7 +19,7 @@
 
 use crate::{
     common,
-    message::{append_emoji, EmojiType}
+    message::{append_emoji, EmojiType},
 };
 use anyhow::Result;
 use colored::Colorize;

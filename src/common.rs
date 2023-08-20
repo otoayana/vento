@@ -18,8 +18,8 @@
  */
 
 use crate::message::{throw_error, ErrorType};
-use colored::control::set_override;
 use anyhow::Result;
+use colored::control::set_override;
 use config::Config;
 use std::env::current_dir;
 use std::fs::File;
@@ -106,15 +106,8 @@ pub fn parse_config() -> Result<DeserializedConfig> {
                 Err(_) => String::new(),
             };
 
-            display_emoji = match settings.get_bool("display_emoji") {
-                Ok(value) => value,
-                Err(_) => true,
-            };
-
-            display_colors = match settings.get_bool("display_colors") {
-                Ok(value) => value,
-                Err(_) => true,
-            };
+            display_emoji = settings.get_bool("display_emoji").unwrap_or(true);
+            display_colors = settings.get_bool("display_colors").unwrap_or(true);
         }
     };
 

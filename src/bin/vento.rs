@@ -21,8 +21,9 @@ use anyhow::Result;
 use std::{env, path::PathBuf};
 use vento::{
     archive,
+    common::override_color,
+    help, history, inv,
     message::{throw_error, ErrorType},
-    help, history, inv, common::override_color
 };
 
 fn main() -> Result<()> {

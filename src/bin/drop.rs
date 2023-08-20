@@ -22,8 +22,9 @@ use std::env;
 use std::path::Path;
 use vento::{
     common::get_current_dir,
+    common::override_color,
+    help, item,
     message::{throw_error, ErrorType},
-    help, item, common::override_color
 };
 
 fn main() -> Result<()> {

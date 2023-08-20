@@ -18,9 +18,8 @@
  */
 
 use crate::{
-    common,
-    message::{append_emoji, throw_error, ErrorType, EmojiType},
-    inv, item,
+    common, inv, item,
+    message::{append_emoji, throw_error, EmojiType, ErrorType},
 };
 use anyhow::Result;
 use colored::Colorize;

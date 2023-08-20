@@ -20,8 +20,9 @@
 use anyhow::Result;
 use std::env;
 use vento::{
+    common::override_color,
+    help, item,
     message::{throw_error, ErrorType},
-    help, item, common::override_color
 };
 
 fn main() -> Result<()> {

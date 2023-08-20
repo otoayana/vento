@@ -17,9 +17,9 @@
  *
  */
 
+use crate::common::parse_config;
 use anyhow::{bail, Result};
 use colored::Colorize;
-use crate::common::parse_config;
 
 pub enum ErrorType {
     TooManyArgs,
@@ -43,10 +43,9 @@ pub enum EmojiType {
     Inventory,
 }
 
-
 pub fn append_emoji(message: EmojiType) -> Result<String> {
     let mut output: String = String::new();
-    
+
     if parse_config()?.display_emoji {
         match message {
             EmojiType::Celebrate => output = String::from("🎉 "),

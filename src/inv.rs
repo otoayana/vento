@@ -19,7 +19,7 @@
 
 use super::{
     common,
-    message::{throw_error, append_emoji, ErrorType, EmojiType},
+    message::{append_emoji, throw_error, EmojiType, ErrorType},
 };
 use anyhow::{bail, Context, Result};
 use colored::Colorize;
@@ -189,7 +189,11 @@ pub fn switch(message: bool) -> Result<()> {
     })?;
 
     if message {
-        println!("{}{}", append_emoji(EmojiType::Success)?, "Switched inventory slots!".green());
+        println!(
+            "{}{}",
+            append_emoji(EmojiType::Success)?,
+            "Switched inventory slots!".green()
+        );
     }
     Ok(())
 }
@@ -202,6 +206,10 @@ fn create_slots() -> Result<()> {
     fs::create_dir_all(active)?;
     fs::create_dir_all(inactive)?;
 
-    println!("{}{}", append_emoji(EmojiType::Celebrate)?, "Vento has been succesfully initialized!".green());
+    println!(
+        "{}{}",
+        append_emoji(EmojiType::Celebrate)?,
+        "Vento has been succesfully initialized!".green()
+    );
     Ok(())
 }
