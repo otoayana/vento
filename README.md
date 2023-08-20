@@ -1,4 +1,4 @@
-![Vento](https://codeberg.org/nixgoat/vento/media/branch/master/assets/logo.png "Vento")
+![Vento](https://git.sr.ht/~nixgoat/vento/blob/master/assets/logo.png "Vento")
 
 [![Latest version](https://shields.io/crates/v/vento?color=red)](https://crates.io/crates/vento)
 [![Downloads](https://shields.io/crates/d/vento)](https://crates.io/crates/vento)
