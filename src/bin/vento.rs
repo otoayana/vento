@@ -22,11 +22,12 @@ use std::{env, path::PathBuf};
 use vento::{
     archive,
     message::{throw_error, ErrorType},
-    help, history, inv,
+    help, history, inv, common::override_color
 };
 
 fn main() -> Result<()> {
     // Handles args in Vento
+    override_color()?;
     let args: Vec<String> = env::args().collect();
     if args.len() >= 2 {
         // If the vector for the arguments the command is taking is larger than 2, it most likely means the user has provided an argument

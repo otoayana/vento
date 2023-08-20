@@ -21,11 +21,12 @@ use anyhow::Result;
 use std::env;
 use vento::{
     message::{throw_error, ErrorType},
-    help, item,
+    help, item, common::override_color
 };
 
 fn main() -> Result<()> {
     // Handles args in Vento
+    override_color()?;
     let args: Vec<String> = env::args().collect();
     if args.len() >= 2 {
         if args[1].contains("--slot=") {

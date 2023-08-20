@@ -18,6 +18,7 @@
  */
 
 use crate::message::{throw_error, ErrorType};
+use colored::control::set_override;
 use anyhow::Result;
 use config::Config;
 use std::env::current_dir;
@@ -161,4 +162,13 @@ pub fn get_current_dir() -> Result<PathBuf> {
     }
 
     Ok(currentdir)
+}
+
+/// Sets color override if display_colors is disabled
+pub fn override_color() -> Result<()> {
+    if !parse_config()?.display_colors {
+        set_override(false)
+    }
+
+    Ok(())
 }
