@@ -18,63 +18,33 @@
  */
 
 use anyhow::Result;
-use std::env;
-use std::path::Path;
-use vento::{
-    common::get_current_dir,
-    common::override_color,
-    help, item,
-    message::{throw_error, ErrorType},
-};
+use clap::Parser;
+use std::path::PathBuf;
+use vento::{common::get_current_dir, item};
+
+#[derive(Parser)]
+#[command(name = "Drop")]
+#[command(about = "A file dropper for Vento", long_about = None)]
+#[command(author, version)]
+struct Cli {
+    /// Pick a slot to drop the file from
+    #[arg(short, long)]
+    slot: Option<String>,
+
+    /// File to drop from inventory
+    file: String,
+    /// Location to drop file onto
+    output: Option<PathBuf>,
+}
 
 fn main() -> Result<()> {
     // Handles args in Drop
-    override_color()?;
-    let args: Vec<String> = env::args().collect();
-    if args.len() >= 2 {
-        if args[1].contains("--slot=") {
-            // Checks if the user has provided the long argument "--slot="
-            match args.len() {
-                4 => item::drop(
-                    &args[2],
-                    &args[1].as_str().replace("--slot=", ""),
-                    Path::new(&args[4]).to_path_buf(),
-                    true,
-                )?,
-                3 => item::drop(
-                    &args[2],
-                    &args[1].as_str().replace("--slot=", ""),
-                    get_current_dir()?,
-                    true,
-                )?,
-                2 => throw_error(ErrorType::SpecifyFile)?,
-                _ => throw_error(ErrorType::TooManyArgs)?,
-            };
-        } else {
-            match args[1].as_str() {
-                "--help" | "-h" => help::drop()?,
-                "-s" => match args.len() {
-                    5 => item::drop(&args[3], &args[2], Path::new(&args[4]).to_path_buf(), true)?,
-                    4 => item::drop(&args[3], &args[2], get_current_dir()?, true)?,
-                    3 => throw_error(ErrorType::SpecifyFile)?,
-                    2 => throw_error(ErrorType::SpecifySlot)?,
-                    _ => throw_error(ErrorType::TooManyArgs)?,
-                },
-                _ => match args.len() {
-                    3 => item::drop(
-                        &args[1],
-                        &String::from("active"),
-                        Path::new(&args[2]).to_path_buf(),
-                        true,
-                    )?,
-                    2 => item::drop(&args[1], &String::from("active"), get_current_dir()?, true)?,
-                    _ => throw_error(ErrorType::TooManyArgs)?,
-                },
-            }
-        }
-    } else {
-        // If the user provides no arguments, Drop will display the help message.
-        help::drop()?;
-    }
+    let cli = Cli::parse();
+    let unwrapped_slot = cli.slot.unwrap_or(String::from("active"));
+    let slot = unwrapped_slot.as_str();
+    let out = cli.output.unwrap_or(get_current_dir()?);
+
+    item::drop(&cli.file, slot, out, true)?;
+
     Ok(())
 }

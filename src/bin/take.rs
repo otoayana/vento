@@ -18,43 +18,28 @@
  */
 
 use anyhow::Result;
-use std::env;
-use vento::{
-    common::override_color,
-    help, item,
-    message::{throw_error, ErrorType},
-};
+use clap::Parser;
+use vento::{common::override_color, item};
+
+#[derive(Parser)]
+#[command(name = "Take")]
+#[command(about = "A file grabber for Vento", long_about = None)]
+#[command(author, version)]
+struct Cli {
+    /// Pick a slot to take the file into
+    #[arg(short, long)]
+    slot: Option<String>,
+
+    /// File to take
+    file: String,
+}
 
 fn main() -> Result<()> {
     // Handles args in Vento
     override_color()?;
-    let args: Vec<String> = env::args().collect();
-    if args.len() >= 2 {
-        if args[1].contains("--slot=") {
-            // Checks if the user has provided the long argument "--slot="
-            match args.len() {
-                3 => item::take(&args[2], &args[1].replace("--slot=", ""), true)?,
-                2 => throw_error(ErrorType::SpecifyFile)?,
-                _ => throw_error(ErrorType::TooManyArgs)?,
-            };
-        } else {
-            match args[1].as_str() {
-                "--help" | "-h" => help::take()?,
-                "-s" => match args.len() {
-                    4 => item::take(&args[3], &args[2], true)?,
-                    3 => throw_error(ErrorType::SpecifyFile)?,
-                    2 => throw_error(ErrorType::SpecifySlot)?,
-                    _ => throw_error(ErrorType::TooManyArgs)?,
-                },
-                _ => match args.len() {
-                    2 => item::take(&args[1], &String::from("active"), true)?,
-                    _ => throw_error(ErrorType::TooManyArgs)?,
-                },
-            }
-        }
-    } else {
-        // If the user provides no arguments, Take will display the help message.
-        help::take()?;
-    }
+    let cli = Cli::parse();
+    let slot = cli.slot.unwrap_or(String::from("active"));
+
+    item::take(&cli.file, &slot, true)?;
     Ok(())
 }
