@@ -41,6 +41,7 @@ pub struct HistoryData {
 
 pub struct DeserializedConfig {
     pub directory: String,
+    pub display_dir: bool,
     pub display_emoji: bool,
     pub display_colors: bool,
 }
@@ -84,6 +85,7 @@ pub fn env_config() -> Result<Settings> {
 /// Handles reading the config file or variables for Vento.
 pub fn parse_config() -> Result<DeserializedConfig> {
     let mut directory = String::new();
+    let mut display_dir = true;
     let mut display_emoji = true;
     let mut display_colors = true;
     let mut config = match dirs::config_dir() {
@@ -106,6 +108,7 @@ pub fn parse_config() -> Result<DeserializedConfig> {
                 Err(_) => String::new(),
             };
 
+            display_dir = settings.get_bool("display_dir").unwrap_or(true);
             display_emoji = settings.get_bool("display_emoji").unwrap_or(true);
             display_colors = settings.get_bool("display_colors").unwrap_or(true);
         }
@@ -113,6 +116,7 @@ pub fn parse_config() -> Result<DeserializedConfig> {
 
     Ok(DeserializedConfig {
         directory,
+        display_dir,
         display_emoji,
         display_colors,
     })

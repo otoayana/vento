@@ -18,7 +18,7 @@
  */
 
 use super::{
-    common,
+    common::{env_config, history, parse_config, Action, HistoryData},
     message::{append_emoji, throw_error, EmojiType, ErrorType},
 };
 use anyhow::{bail, Result};
@@ -29,15 +29,15 @@ use std::path::{Path, PathBuf};
 
 /// Takes a file or directory and stores it in an inventory slot
 pub fn take(file: &String, slot: &str, message: bool) -> Result<()> {
-    let ventodir = &common::env_config()?.vento_dir;
+    let ventodir = &env_config()?.vento_dir;
 
     if !ventodir.is_dir() {
         // Detects if Vento hasn't been initialized and bails if so
         throw_error(ErrorType::NotInitialized)?;
     };
     let slotdir: PathBuf = match slot {
-        "active" | "a" => common::env_config()?.active_dir,
-        "inactive" | "i" => common::env_config()?.inactive_dir,
+        "active" | "a" => env_config()?.active_dir,
+        "inactive" | "i" => env_config()?.inactive_dir,
         _ => PathBuf::new(),
     };
 
@@ -78,21 +78,26 @@ pub fn take(file: &String, slot: &str, message: bool) -> Result<()> {
         throw_error(ErrorType::NoFileOrDir)?;
     }
 
-    common::history(common::HistoryData {
+    history(HistoryData {
         path: sourcelocation.clone(),
         file: String::from(filename),
         slot: String::from(slot),
-        action: common::Action::Take,
+        action: Action::Take,
     })?;
 
     if message {
         println!(
-            "{}{} {} {} {} {} {} {}",
+            "{}{} {} {}{} {} {}",
             append_emoji(EmojiType::Success)?,
             "Took".green(),
             &filename.bold(),
-            "from".green(),
-            &sourcelocation.to_str().unwrap(),
+            match parse_config()?.display_dir {
+                true => format! {"{} {} ",
+                    "from".green(),
+                    &sourcelocation.to_str().unwrap(),
+                },
+                _ => String::new(),
+            },
             "to".green(),
             match slot {
                 "active" => slot.green(),
@@ -110,7 +115,7 @@ pub fn take(file: &String, slot: &str, message: bool) -> Result<()> {
 /// Drops a file or directory and stores it in an inventory slot
 pub fn drop(file: &String, slot: &str, dest: PathBuf, message: bool) -> Result<()> {
     // Drops a file or directory
-    let ventodir = &common::env_config()?.vento_dir;
+    let ventodir = &env_config()?.vento_dir;
 
     if !ventodir.is_dir() {
         // Detects if Vento hasn't been initialized and bails if so
@@ -118,8 +123,8 @@ pub fn drop(file: &String, slot: &str, dest: PathBuf, message: bool) -> Result<(
     };
 
     let slotdir: PathBuf = match slot {
-        "active" | "a" => common::env_config()?.active_dir,
-        "inactive" | "i" => common::env_config()?.inactive_dir,
+        "active" | "a" => env_config()?.active_dir,
+        "inactive" | "i" => env_config()?.inactive_dir,
         _ => PathBuf::new(),
     };
 
@@ -163,16 +168,16 @@ pub fn drop(file: &String, slot: &str, dest: PathBuf, message: bool) -> Result<(
 
     destpath.pop();
 
-    common::history(common::HistoryData {
+    history(HistoryData {
         path: destpath.clone(),
         file: String::from(file),
         slot: String::from(slot),
-        action: common::Action::Drop,
+        action: Action::Drop,
     })?;
 
     if message {
         println!(
-            "{}{} {} {} {} {} {}",
+            "{}{} {} {} {} {}{}",
             append_emoji(EmojiType::Success)?,
             "Dropped".green(),
             &file.bold(),
@@ -183,8 +188,14 @@ pub fn drop(file: &String, slot: &str, dest: PathBuf, message: bool) -> Result<(
                 _ => slot.red(),
             }
             .bold(),
-            "slot into".green(),
-            &destpath.to_str().unwrap()
+            "slot".green(),
+            match parse_config()?.display_dir {
+                true => format! {"{} {} ",
+                    " into".green(),
+                    &destpath.to_str().unwrap(),
+                },
+                _ => String::new(),
+            },
         );
     };
 
