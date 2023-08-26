@@ -28,7 +28,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 /// Takes a file or directory and stores it in an inventory slot
-pub fn take(file: &String, slot: &str, message: bool) -> Result<()> {
+pub fn take(file: &String, slot: &str, message: bool, display_slot: bool) -> Result<()> {
     let ventodir = &env_config()?.vento_dir;
 
     if !ventodir.is_dir() {
@@ -87,25 +87,31 @@ pub fn take(file: &String, slot: &str, message: bool) -> Result<()> {
 
     if message {
         println!(
-            "{}{} {} {}{} {} {}",
+            "{}{} {}{}{}",
             append_emoji(EmojiType::Success)?,
             "Took".green(),
             &filename.bold(),
             match parse_config()?.display_dir {
                 true => format! {"{} {} ",
-                    "from".green(),
+                    " from".green(),
                     &sourcelocation.to_str().unwrap(),
                 },
                 _ => String::new(),
             },
-            "to".green(),
-            match slot {
-                "active" => slot.green(),
-                "inactive" => slot.blue(),
-                _ => slot.red(),
-            }
-            .bold(),
-            "slot".green()
+            match display_slot {
+                true => format!(
+                    "{} {} {}",
+                    " to".green(),
+                    match slot {
+                        "active" => slot.green(),
+                        "inactive" => slot.blue(),
+                        _ => slot.red(),
+                    }
+                    .bold(),
+                    "slot".green()
+                ),
+                _ => String::new(),
+            },
         );
     }
 
@@ -113,7 +119,13 @@ pub fn take(file: &String, slot: &str, message: bool) -> Result<()> {
 }
 
 /// Drops a file or directory and stores it in an inventory slot
-pub fn drop(file: &String, slot: &str, dest: PathBuf, message: bool) -> Result<()> {
+pub fn drop(
+    file: &String,
+    slot: &str,
+    dest: PathBuf,
+    message: bool,
+    display_slot: bool,
+) -> Result<()> {
     // Drops a file or directory
     let ventodir = &env_config()?.vento_dir;
 
@@ -177,18 +189,24 @@ pub fn drop(file: &String, slot: &str, dest: PathBuf, message: bool) -> Result<(
 
     if message {
         println!(
-            "{}{} {} {} {} {}{}",
+            "{}{} {}{}{}",
             append_emoji(EmojiType::Success)?,
             "Dropped".green(),
             &file.bold(),
-            "from".green(),
-            match slot {
-                "active" => slot.green(),
-                "inactive" => slot.blue(),
-                _ => slot.red(),
-            }
-            .bold(),
-            "slot".green(),
+            match display_slot {
+                true => format!(
+                    "{} {} {}",
+                    " from".green(),
+                    match slot {
+                        "active" => slot.green(),
+                        "inactive" => slot.blue(),
+                        _ => slot.red(),
+                    }
+                    .bold(),
+                    "slot".green(),
+                ),
+                false => String::new(),
+            },
             match parse_config()?.display_dir {
                 true => format! {"{} {} ",
                     " into".green(),

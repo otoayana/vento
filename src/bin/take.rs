@@ -38,8 +38,8 @@ fn main() -> Result<()> {
     // Handles args in Vento
     override_color()?;
     let cli = Cli::parse();
-    let slot = cli.slot.unwrap_or(String::from("active"));
+    let slot = cli.slot.clone().unwrap_or(String::from("active"));
 
-    item::take(&cli.file, &slot, true)?;
+    item::take(&cli.file, &slot, true, cli.slot.is_some())?;
     Ok(())
 }

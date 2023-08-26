@@ -40,11 +40,11 @@ struct Cli {
 fn main() -> Result<()> {
     // Handles args in Drop
     let cli = Cli::parse();
-    let unwrapped_slot = cli.slot.unwrap_or(String::from("active"));
+    let unwrapped_slot = cli.slot.clone().unwrap_or(String::from("active"));
     let slot = unwrapped_slot.as_str();
     let out = cli.output.unwrap_or(get_current_dir()?);
 
-    item::drop(&cli.file, slot, out, true)?;
+    item::drop(&cli.file, slot, out, true, cli.slot.is_some())?;
 
     Ok(())
 }

@@ -48,11 +48,17 @@ pub fn undo() -> Result<()> {
     match contents[3] {
         "take" => {
             let destpath = Path::new(contents[0]).to_path_buf();
-            item::drop(&String::from(contents[1]), contents[2], destpath, false)?;
+            item::drop(
+                &String::from(contents[1]),
+                contents[2],
+                destpath,
+                false,
+                false,
+            )?;
         }
         "drop" => {
             let path = vec![contents[0], contents[1]].join("/");
-            item::take(&path, contents[2], false)?;
+            item::take(&path, contents[2], false, false)?;
         }
         "switch" => {
             inv::switch(false)?;
