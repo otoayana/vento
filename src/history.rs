@@ -18,7 +18,8 @@
  */
 
 use crate::{
-    common, inv, item,
+    common::{env_config, parse_config},
+    inv, item,
     message::{append_emoji, throw_error, EmojiType, ErrorType},
 };
 use anyhow::Result;
@@ -28,12 +29,9 @@ use std::path::{Path, PathBuf};
 
 /// Undoes the last action made by Vento using the history file located on the Vento directory
 pub fn undo() -> Result<()> {
-    let lastpath: PathBuf = [
-        common::env_config()?.vento_dir,
-        Path::new("last").to_path_buf(),
-    ]
-    .iter()
-    .collect();
+    let lastpath: PathBuf = [env_config()?.vento_dir, Path::new("last").to_path_buf()]
+        .iter()
+        .collect();
 
     let lastfile = fs::read_to_string(lastpath)?;
 
@@ -78,9 +76,12 @@ pub fn undo() -> Result<()> {
                 "{}{}{}{}{}{}{}",
                 " (".green(),
                 contents[1].bold(),
-                ", from ".green(),
-                contents[0],
-                " to ".green(),
+                ", ".green(),
+                match parse_config()?.history_display_dir {
+                    true => format!("{} {} ", "from".green(), contents[0],),
+                    _ => String::new(),
+                },
+                "to ".green(),
                 match contents[2] {
                     "active" => contents[2].green(),
                     "inactive" => contents[2].blue(),
@@ -100,8 +101,11 @@ pub fn undo() -> Result<()> {
                     _ => contents[2].red(),
                 }
                 .bold(),
-                " slot to ".green(),
-                contents[0],
+                " slot".green(),
+                match parse_config()?.history_display_dir {
+                    true => format!(" {} {}", "to".green(), contents[0],),
+                    false => String::new(),
+                },
                 ")".green(),
             ),
             _ => String::from(""),

@@ -25,6 +25,7 @@ config = "0.13"
 xz2 = "0.1"
 tar = "0.4"
 clap = { version = "4.3.23", features = ["derive"] }
+serde = "1.0"
 
 [build-dependencies]
 man = "0.3.0"

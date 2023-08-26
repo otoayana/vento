@@ -842,6 +842,7 @@ dependencies = [
  "dirs",
  "fs_extra",
  "man",
+ "serde",
  "size_format",
  "tar",
  "xz2",

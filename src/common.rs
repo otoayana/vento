@@ -21,6 +21,7 @@ use crate::message::{throw_error, ErrorType};
 use anyhow::Result;
 use colored::control::set_override;
 use config::Config;
+use serde::Deserialize;
 use std::env::current_dir;
 use std::fs::File;
 use std::io::Write;
@@ -42,8 +43,15 @@ pub struct HistoryData {
 pub struct DeserializedConfig {
     pub directory: String,
     pub display_dir: bool,
+    pub history_display_dir: bool,
     pub display_emoji: bool,
     pub display_colors: bool,
+}
+
+#[derive(Debug, Deserialize)]
+#[allow(unused)]
+struct History {
+    display_dir: bool,
 }
 
 pub enum Action {
@@ -86,6 +94,7 @@ pub fn env_config() -> Result<Settings> {
 pub fn parse_config() -> Result<DeserializedConfig> {
     let mut directory = String::new();
     let mut display_dir = true;
+    let mut history_display_dir = true;
     let mut display_emoji = true;
     let mut display_colors = true;
     let mut config = match dirs::config_dir() {
@@ -109,6 +118,7 @@ pub fn parse_config() -> Result<DeserializedConfig> {
             };
 
             display_dir = settings.get_bool("display_dir").unwrap_or(true);
+            history_display_dir = settings.get_bool("history.display_dir").unwrap_or(true);
             display_emoji = settings.get_bool("display_emoji").unwrap_or(true);
             display_colors = settings.get_bool("display_colors").unwrap_or(true);
         }
@@ -117,6 +127,7 @@ pub fn parse_config() -> Result<DeserializedConfig> {
     Ok(DeserializedConfig {
         directory,
         display_dir,
+        history_display_dir,
         display_emoji,
         display_colors,
     })
