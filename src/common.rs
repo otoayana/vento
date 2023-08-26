@@ -50,6 +50,12 @@ pub struct DeserializedConfig {
 
 #[derive(Debug, Deserialize)]
 #[allow(unused)]
+struct Item {
+    display_dir: bool,
+}
+
+#[derive(Debug, Deserialize)]
+#[allow(unused)]
 struct History {
     display_dir: bool,
 }
@@ -117,7 +123,7 @@ pub fn parse_config() -> Result<DeserializedConfig> {
                 Err(_) => String::new(),
             };
 
-            display_dir = settings.get_bool("display_dir").unwrap_or(true);
+            display_dir = settings.get_bool("item.display_dir").unwrap_or(true);
             history_display_dir = settings.get_bool("history.display_dir").unwrap_or(true);
             display_emoji = settings.get_bool("display_emoji").unwrap_or(true);
             display_colors = settings.get_bool("display_colors").unwrap_or(true);
