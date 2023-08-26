@@ -120,7 +120,11 @@ fn main() -> Result<()> {
     } else if cli.import_dir.is_some() {
         archive::import_dir(cli.import_dir.unwrap(), true)?
     } else {
-        inv::list(cli.slot.unwrap_or(String::from("active")).as_str(), dir)?
+        inv::list(
+            cli.slot.clone().unwrap_or(String::from("active")).as_str(),
+            dir,
+            cli.slot.is_some(),
+        )?
     }
 
     Ok(())

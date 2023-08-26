@@ -49,7 +49,7 @@ pub fn init() -> Result<()> {
 }
 
 /// Lists files in the provided slot and/or directory
-pub fn list(slot: &str, dir: &str) -> Result<()> {
+pub fn list(slot: &str, dir: &str, display_slot: bool) -> Result<()> {
     let ventodir = &common::env_config()?.vento_dir;
 
     if !ventodir.is_dir() {
@@ -93,9 +93,13 @@ pub fn list(slot: &str, dir: &str) -> Result<()> {
             append_emoji(EmojiType::Inventory)?,
             format!(
                 "No files in {}{}",
-                match slot {
-                    "active" => slot.bold(),
-                    _ => slot.blue().bold(),
+                if display_slot || dir != "" {
+                    match slot {
+                        "active" => slot.bold(),
+                        _ => slot.blue().bold(),
+                    }
+                } else {
+                    "inventory".clear()
                 },
                 if !dir.is_empty() {
                     if cfg!(windows) {
@@ -114,10 +118,17 @@ pub fn list(slot: &str, dir: &str) -> Result<()> {
             "{}{}",
             append_emoji(EmojiType::Inventory)?,
             format!(
-                "Files in {}{} ({}):",
-                match slot {
-                    "active" => slot.bold(),
-                    _ => slot.blue().bold(),
+                "Files in{}{} ({}):",
+                if display_slot || dir != "" {
+                    format!(
+                        " {}",
+                        match slot {
+                            "active" => slot.bold(),
+                            _ => slot.blue().bold(),
+                        },
+                    )
+                } else {
+                    String::new()
                 },
                 if !dir.is_empty() {
                     if cfg!(windows) {
