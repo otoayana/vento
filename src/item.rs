@@ -92,7 +92,7 @@ pub fn take(file: &String, slot: &str, message: bool, display_slot: bool) -> Res
             "Took".green(),
             &filename.bold(),
             match parse_config()?.display_dir {
-                true => format! {"{} {} ",
+                true => format! {"{} {}",
                     " from".green(),
                     &sourcelocation.to_str().unwrap(),
                 },
