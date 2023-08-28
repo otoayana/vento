@@ -29,7 +29,7 @@ $ git clone https://git.sr.ht/~nixgoat/vento && cd vento
 Check out to the latest stable release.
 
 ```
-$ git checkout v1.2
+$ git checkout v1.3
 ```
 
 ### 2.a) cargo-make
