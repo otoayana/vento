@@ -93,7 +93,7 @@ pub fn list(slot: &str, dir: &str, display_slot: bool) -> Result<()> {
             append_emoji(EmojiType::Inventory)?,
             format!(
                 "No files in {}{}",
-                if display_slot || dir != "" {
+                if display_slot || !dir.is_empty() {
                     match slot {
                         "active" => slot.bold(),
                         _ => slot.blue().bold(),
@@ -119,7 +119,7 @@ pub fn list(slot: &str, dir: &str, display_slot: bool) -> Result<()> {
             append_emoji(EmojiType::Inventory)?,
             format!(
                 "Files in{}{} ({}):",
-                if display_slot || dir != "" {
+                if display_slot || !dir.is_empty() {
                     format!(
                         " {}",
                         match slot {
