@@ -48,7 +48,7 @@ fn main() -> Result<()> {
 fn vento() -> Result<Page> {
     let content = Manual::new("vento")
         .about("a CLI inventory for your files")
-        .author(Author::new("Lux Aliaga").email("they@mint.lgbt"))
+        .author(Author::new("Lux Aliaga").email("lux@nixgoat.me"))
         .description("List files and directories in the currently active inventory, the files in SLOT, the files in DIRECTORY or the files in DIRECTORY in SLOT.")
         .flag(
             Flag::new()
@@ -120,7 +120,7 @@ fn vento() -> Result<Page> {
 fn take() -> Result<Page> {
     let content = Manual::new("take")
         .about("a file grabber for Vento")
-        .author(Author::new("Lux Aliaga").email("they@mint.lgbt"))
+        .author(Author::new("Lux Aliaga").email("lux@nixgoat.me"))
         .description("Take FILE and put it in the inventory.")
         .option(
             Opt::new("slot")
@@ -140,7 +140,7 @@ fn take() -> Result<Page> {
 fn drop() -> Result<Page> {
     let content = Manual::new("drop")
         .about("a file dropper for Vento")
-        .author(Author::new("Lux Aliaga").email("they@mint.lgbt"))
+        .author(Author::new("Lux Aliaga").email("lux@nixgoat.me"))
         .description("Take FILE off the inventory and drop it in DESTINATION.")
         .option(
             Opt::new("slot")
@@ -161,11 +161,15 @@ fn drop() -> Result<Page> {
 fn ventotoml() -> Result<Page> {
     let content = Manual::new("vento.toml")
         .about("configuration file for Vento")
-        .author(Author::new("Lux Aliaga").email("they@mint.lgbt"))
-        .description("This is the configuration file for the vento(1), take(1) and drop(1) utilities. Its presence and all its directives are optional.")
+        .author(Author::new("Lux Aliaga").email("lux@nixgoat.me"))
+        .description("This is the configuration file for the vento(1), take(1) and drop(1) utilities. Its presence and all its directives are optional. Directives prefixed with \"name.directive\" indicate a separate section in config file, denoted by brackets.")
         .custom (
             Section::new("supported directives")
             .paragraph("directory = \"PATH\": Changes the path in which Vento's inventories are saved in.")
+            .paragraph("display_emoji = (true | false): Sets whether emojis will be prefixed on messages or not.")
+            .paragraph("display_colors = (true | false): Sets whether messages will be colored.")
+            .paragraph("item.display_dir = (true | false): Sets whether item actions will show the paths involved in the operation.")
+            .paragraph("history.display_dir = (true | false): Sets whether history actions will show the paths involved in the operation.")
         )
         .custom (
             Section::new("files")
