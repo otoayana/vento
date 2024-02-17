@@ -28,7 +28,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 /// Takes a file or directory and stores it in an inventory slot
-pub fn take(file: &String, slot: &str, message: bool, display_slot: bool) -> Result<()> {
+pub fn take(file: &String, slot: &str, message: bool, display_slot: bool, save_history: bool) -> Result<()> {
     let ventodir = &env_config()?.vento_dir;
 
     if !ventodir.is_dir() {
@@ -78,12 +78,17 @@ pub fn take(file: &String, slot: &str, message: bool, display_slot: bool) -> Res
         throw_error(ErrorType::NoFileOrDir)?;
     }
 
-    history(HistoryData {
-        path: sourcelocation.clone(),
-        file: String::from(filename),
-        slot: String::from(slot),
-        action: Action::Take,
-    })?;
+    if save_history {
+        history(HistoryData {
+	    id: 0,
+            path: Some(sourcelocation.clone()),
+            file: Some(String::from(filename)),
+            slot: Some(String::from(slot)),
+            action: Action::Take,
+	    current: 1,
+	    time: 0,
+        })?;
+    }
 
     if message {
         println!(
@@ -125,6 +130,7 @@ pub fn drop(
     dest: PathBuf,
     message: bool,
     display_slot: bool,
+    save_history: bool
 ) -> Result<()> {
     // Drops a file or directory
     let ventodir = &env_config()?.vento_dir;
@@ -180,12 +186,17 @@ pub fn drop(
 
     destpath.pop();
 
-    history(HistoryData {
-        path: destpath.clone(),
-        file: String::from(file),
-        slot: String::from(slot),
-        action: Action::Drop,
-    })?;
+    if save_history {
+        history(HistoryData {
+	    id: 0,
+            path: Some(destpath.clone()),
+            file: Some(String::from(file)),
+            slot: Some(String::from(slot)),
+            action: Action::Drop,
+            current: 1,
+	    time: 0,
+        })?;
+    }
 
     if message {
         println!(

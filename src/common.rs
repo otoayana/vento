@@ -21,11 +21,11 @@ use crate::message::{throw_error, ErrorType};
 use anyhow::Result;
 use colored::control::set_override;
 use config::Config;
+use rusqlite::Connection;
 use serde::Deserialize;
 use std::env::current_dir;
-use std::fs::File;
-use std::io::Write;
 use std::path::{Path, PathBuf};
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 pub struct Settings {
     pub vento_dir: PathBuf,
@@ -33,11 +33,15 @@ pub struct Settings {
     pub inactive_dir: PathBuf,
 }
 
+#[derive(Debug)]
 pub struct HistoryData {
-    pub path: PathBuf,
-    pub file: String,
-    pub slot: String,
+    pub id: i32,
+    pub path: Option<PathBuf>,
+    pub file: Option<String>,
+    pub slot: Option<String>,
     pub action: Action,
+    pub time: i64,
+    pub current: i32,
 }
 
 pub struct DeserializedConfig {
@@ -60,6 +64,7 @@ struct History {
     display_dir: bool,
 }
 
+#[derive(Debug)]
 pub enum Action {
     Take,
     Drop,
@@ -139,26 +144,48 @@ pub fn parse_config() -> Result<DeserializedConfig> {
     })
 }
 
-/// Writes an action into the history file
+/// Writes an action into the history database
 pub fn history(data: HistoryData) -> Result<()> {
-    let mut last_path = env_config()?.vento_dir;
-    last_path.push("last");
-    let mut last_file = File::create(last_path)?;
+    let mut path = env_config()?.vento_dir;
+    path.push("history.db3");
+    let db = Connection::open(path)?;
 
-    write!(
-        &mut last_file,
-        "{}
-{}
-{}
-{}",
-        data.path.to_str().unwrap(),
-        data.file,
-        data.slot,
-        match data.action {
-            Action::Take => "take",
-            Action::Drop => "drop",
-            Action::Switch => "switch",
-        }
+    // Create table if it doesn't exist.
+    db.execute(
+        "CREATE TABLE IF NOT EXISTS history (
+                id      INTEGER PRIMARY KEY,
+                path    TEXT,
+                file    TEXT,
+                slot    TEXT,
+                action  TEXT NOT NULL,
+		time	INTEGER NOT NULL,
+                current INTEGER NOT NULL)",
+        (),
+    )?;
+
+    // Remove future actions
+    let mut current = db.prepare("SELECT id FROM history WHERE current = 1")?;
+    let actions = current.query_map([], |row| Ok(row.get(0)?))?;
+    let lastaction: i64 = actions.last().unwrap_or(Ok(0))?;
+    db.execute("DELETE FROM history WHERE id > ?1", [lastaction])?;
+
+    // Unset current actions
+    db.execute("UPDATE history SET current = 0 WHERE current = 1", ())?;
+
+    // Insert action into table
+    db.execute(
+        "INSERT INTO history (path, file, slot, action, time, current) VALUES (?1, ?2, ?3, ?4, ?5, 1)",
+        (
+            data.path.unwrap_or(PathBuf::new()).to_str(),
+            data.file,
+            data.slot,
+	    match data.action {
+                Action::Take => "take",
+                Action::Drop => "drop",
+                Action::Switch => "switch",
+            },
+            SystemTime::now().duration_since(UNIX_EPOCH).unwrap_or(Duration::new(0, 0)).as_secs(),
+        ),
     )?;
 
     Ok(())

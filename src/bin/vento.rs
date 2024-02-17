@@ -39,9 +39,13 @@ struct Cli {
     #[arg(short = 'c', long)]
     switch: bool,
 
-    /// Undo the last action
-    #[arg(short, long)]
-    undo: bool,
+    /// Undo actions by a certain amount of steps
+    #[arg(short, long, value_name="STEPS", default_missing_value = "1", num_args = ..=1)]
+    undo: Option<usize>,
+
+    /// Redo actions by a certain amount of steps
+    #[arg(short, long, value_name="STEPS", default_missing_value = "1", num_args = ..=1)]
+    redo: Option<usize>,
 
     /// Export an inventory
     #[arg(short, long, value_names = &["SLOT", "ARCHIVE"], num_args = ..=2)]
@@ -73,11 +77,19 @@ fn main() -> Result<()> {
     let dir = unwrapped_dir.as_str();
 
     if cli.switch {
-        inv::switch(true)?
-    } else if cli.undo {
-        history::undo()?
+        inv::switch(true, true)?
     } else if cli.init {
         inv::init()?
+    } else if cli.undo.is_some() {
+        history::undo(match cli.undo {
+            Some(x) => x,
+            None => 1,
+        })?
+    } else if cli.redo.is_some() {
+        history::redo(match cli.redo {
+		Some(x) => x,
+		None => 1,
+	})?
     } else if cli.export_inv.is_some() {
         let unwrapped_export_inv = cli.export_inv.unwrap();
         let export_inv_values = match unwrapped_export_inv.len() {

@@ -40,6 +40,6 @@ fn main() -> Result<()> {
     let cli = Cli::parse();
     let slot = cli.slot.clone().unwrap_or(String::from("active"));
 
-    item::take(&cli.file, &slot, true, cli.slot.is_some())?;
+    item::take(&cli.file, &slot, true, cli.slot.is_some(), true)?;
     Ok(())
 }

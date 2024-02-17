@@ -178,7 +178,7 @@ pub fn list(slot: &str, dir: &str, display_slot: bool) -> Result<()> {
 }
 
 /// Switches inevntory slots between each other, making the currently active inventory inactive and viceversa
-pub fn switch(message: bool) -> Result<()> {
+pub fn switch(message: bool, save_history: bool) -> Result<()> {
     let ventodir = &common::env_config()?.vento_dir;
     let active = &common::env_config()?.active_dir;
     let inactive = &common::env_config()?.inactive_dir;
@@ -192,12 +192,17 @@ pub fn switch(message: bool) -> Result<()> {
     fs::rename(inactive, active).context(rename_error)?;
     fs::rename(&temp, inactive).context(rename_error)?;
 
-    common::history(common::HistoryData {
-        path: PathBuf::new(),
-        file: String::new(),
-        slot: String::new(),
-        action: common::Action::Switch,
-    })?;
+    if save_history {
+        common::history(common::HistoryData {
+	    id: 0,
+            path: None,
+            file: None,
+            slot: None,
+            action: common::Action::Switch,
+	    current: 1,
+	    time: 0,
+        })?;
+    }
 
     if message {
         println!(
