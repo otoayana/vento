@@ -47,6 +47,10 @@ struct Cli {
     #[arg(short, long, value_name="STEPS", default_missing_value = "1", num_args = ..=1)]
     redo: Option<usize>,
 
+    /// View log of actions
+    #[arg(short = 'v', long, value_name="LENGTH", default_missing_value = "2", num_args = ..=1)]
+    view: Option<isize>,
+
     /// Export an inventory
     #[arg(short, long, value_names = &["SLOT", "ARCHIVE"], num_args = ..=2)]
     export_inv: Option<Vec<String>>,
@@ -87,9 +91,14 @@ fn main() -> Result<()> {
         })?
     } else if cli.redo.is_some() {
         history::redo(match cli.redo {
-		Some(x) => x,
-		None => 1,
-	})?
+            Some(x) => x,
+            None => 1,
+        })?
+    } else if cli.view.is_some() {
+        history::view(match cli.view {
+            Some(x) => x,
+            None => 2,
+        })?
     } else if cli.export_inv.is_some() {
         let unwrapped_export_inv = cli.export_inv.unwrap();
         let export_inv_values = match unwrapped_export_inv.len() {
