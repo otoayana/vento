@@ -194,13 +194,13 @@ pub fn switch(message: bool, save_history: bool) -> Result<()> {
 
     if save_history {
         common::history(common::HistoryData {
-	    id: 0,
+            id: 0,
             path: None,
             file: None,
             slot: None,
             action: common::Action::Switch,
-	    current: 1,
-	    time: 0,
+            current: 1,
+            time: 0,
         })?;
     }
 

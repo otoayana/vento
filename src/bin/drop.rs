@@ -45,7 +45,6 @@ fn main() -> Result<()> {
     let out = cli.output.unwrap_or(get_current_dir()?);
 
     item::drop(&cli.file, slot, out, true, cli.slot.is_some(), true)?;
-    
 
     Ok(())
 }

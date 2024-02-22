@@ -165,7 +165,7 @@ pub fn history(data: HistoryData) -> Result<()> {
 
     // Remove future actions
     let mut current = db.prepare("SELECT id FROM history WHERE current = 1")?;
-    let actions = current.query_map([], |row| Ok(row.get(0)?))?;
+    let actions = current.query_map([], |row| row.get(0))?;
     let lastaction: i64 = actions.last().unwrap_or(Ok(0))?;
     db.execute("DELETE FROM history WHERE id > ?1", [lastaction])?;
 
@@ -176,7 +176,7 @@ pub fn history(data: HistoryData) -> Result<()> {
     db.execute(
         "INSERT INTO history (path, file, slot, action, time, current) VALUES (?1, ?2, ?3, ?4, ?5, 1)",
         (
-            data.path.unwrap_or(PathBuf::new()).to_str(),
+            data.path.unwrap_or_default().to_str(),
             data.file,
             data.slot,
 	    match data.action {

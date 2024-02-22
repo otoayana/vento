@@ -18,7 +18,7 @@
  */
 
 use crate::{
-    common::{env_config, parse_config, Action, HistoryData},
+    common::{self, env_config, parse_config, Action, HistoryData},
     inv, item,
     message::{append_emoji, throw_error, EmojiType, ErrorType},
 };
@@ -26,7 +26,10 @@ use anyhow::Result;
 use chrono::prelude::*;
 use colored::Colorize;
 use rusqlite::Connection;
-use std::path::{Path, PathBuf};
+use std::{
+    fs,
+    path::{Path, PathBuf},
+};
 
 /// Undoes actions made by Vento using the history database located on the Vento directory
 pub fn undo(steps: usize) -> Result<()> {
@@ -40,7 +43,7 @@ pub fn undo(steps: usize) -> Result<()> {
 
     // Determine if step amount is greater than the position of the action
     let mut current = db.prepare("SELECT id FROM history WHERE current = 1")?;
-    let actions = current.query_map([], |row| Ok(row.get(0)?))?;
+    let actions = current.query_map([], |row| row.get(0))?;
     let last_action: usize = actions.last().unwrap_or(Ok(0))?;
 
     if last_action <= steps {
@@ -86,7 +89,7 @@ pub fn undo(steps: usize) -> Result<()> {
                 )?;
             }
             Action::Drop => {
-                let path: String = vec![
+                let path: String = [
                     String::from(step.path.unwrap().to_str().unwrap()),
                     step.file.unwrap(),
                 ]
@@ -206,12 +209,12 @@ pub fn redo(steps: usize) -> Result<()> {
 
     // Determine if step amount is greater than the position of the action
     let mut current = db.prepare("SELECT id FROM history WHERE current = 1")?;
-    let actions = current.query_map([], |row| Ok(row.get(0)?))?;
+    let actions = current.query_map([], |row| row.get(0))?;
     let last_action: usize = actions.last().unwrap_or(Ok(0))?;
 
     // Determine table size
     let mut size_transaction = db.prepare("SELECT id FROM history")?;
-    let size_actions = size_transaction.query_map([], |row| Ok(row.get(0)?))?;
+    let size_actions = size_transaction.query_map([], |row| row.get(0))?;
     let size: usize = size_actions.last().unwrap_or(Ok(0))?;
 
     if size - last_action < steps {
@@ -247,7 +250,7 @@ pub fn redo(steps: usize) -> Result<()> {
 
         match step.action {
             Action::Take => {
-                let path: String = vec![
+                let path: String = [
                     String::from(step.path.unwrap().to_str().unwrap()),
                     step.file.unwrap(),
                 ]
@@ -363,6 +366,7 @@ pub fn redo(steps: usize) -> Result<()> {
     Ok(())
 }
 
+/// Displays n actions before and after the current action
 pub fn view(length: isize) -> Result<()> {
     let path: PathBuf = [
         env_config()?.vento_dir,
@@ -374,7 +378,7 @@ pub fn view(length: isize) -> Result<()> {
 
     // Determine table size
     let mut size_transaction = db.prepare("SELECT id FROM history")?;
-    let size_actions = size_transaction.query_map([], |row| Ok(row.get(0)?))?;
+    let size_actions = size_transaction.query_map([], |row| row.get(0))?;
     let size: isize = size_actions.last().unwrap_or(Ok(0))?;
 
     let (x, _) = termion::terminal_size().unwrap();
@@ -390,7 +394,7 @@ pub fn view(length: isize) -> Result<()> {
 
     // Find last action
     let mut current = db.prepare("SELECT id FROM history WHERE current = 1")?;
-    let actions = current.query_map([], |row| Ok(row.get(0)?))?;
+    let actions = current.query_map([], |row| row.get(0))?;
     let last_action: isize = actions.last().unwrap_or(Ok(0))?;
 
     let mut forward: isize = last_action + length;
@@ -522,7 +526,6 @@ pub fn view(length: isize) -> Result<()> {
         } else {
             file_column_len = space_left + 8 - file_len
         }
-        if file_len > space_left + 8 {}
 
         for x in 0..file_column_len {
             file_pad.insert(x, ' ');
@@ -588,6 +591,56 @@ pub fn view(length: isize) -> Result<()> {
         );
     }
     println!("{}", separator);
+
+    Ok(())
+}
+
+/// Migrate old "last" file into the history database
+pub fn migrate() -> Result<()> {
+    // Get last file from previous location
+    let last_path: PathBuf = [env_config()?.vento_dir, Path::new("last").to_path_buf()]
+        .iter()
+        .collect();
+
+    if !last_path.is_file() {
+        throw_error(ErrorType::NoFileOrDir)?;
+    }
+
+    let last_file = fs::read_to_string(&last_path)?;
+
+    let mut contents = vec![];
+
+    for line in last_file.lines() {
+        contents.push(line);
+    }
+
+    if contents.len() != 4 {
+        throw_error(ErrorType::InvalidHistoryLength)?;
+    }
+
+    // Write contents of file into history database
+    common::history(HistoryData {
+        id: 0,
+        path: Some(Path::new(contents[0]).to_path_buf()),
+        file: Some(String::from(contents[1])),
+        slot: Some(String::from(contents[2])),
+        action: match contents[3] {
+            "take" => Action::Take,
+            "drop" => Action::Drop,
+            "switch" => Action::Switch,
+            _ => unreachable!(),
+        },
+        time: 0,
+        current: 1,
+    })?;
+
+    fs::remove_file(last_path)?;
+
+    println!(
+        "{}{}",
+        append_emoji(EmojiType::Success)?,
+        "Migrated history file to database".green()
+    );
 
     Ok(())
 }

@@ -60,7 +60,25 @@ fn vento() -> Result<Page> {
             Flag::new()
                 .short("-u")
                 .long("--undo")
-                .help("Undoes the last action"),
+                .help("Undoes actions by a certain amount of steps"),
+        )
+        .flag(
+            Flag::new()
+                .short("-r")
+                .long("--redo")
+                .help("Redoes actions by a certain amount of steps"),
+        )
+        .flag(
+            Flag::new()
+                .short("-v")
+                .long("--view")
+                .help("Shows log of actions"),
+        )
+        .flag(
+            Flag::new()
+                .short("-m")
+                .long("--migrate")
+                .help("Migrates history file to database"),
         )
         .flag(
             Flag::new()

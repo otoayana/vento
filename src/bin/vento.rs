@@ -51,6 +51,10 @@ struct Cli {
     #[arg(short = 'v', long, value_name="LENGTH", default_missing_value = "2", num_args = ..=1)]
     view: Option<isize>,
 
+    /// Migrate history file to database
+    #[arg(short, long)]
+    migrate: bool,
+
     /// Export an inventory
     #[arg(short, long, value_names = &["SLOT", "ARCHIVE"], num_args = ..=2)]
     export_inv: Option<Vec<String>>,
@@ -85,20 +89,13 @@ fn main() -> Result<()> {
     } else if cli.init {
         inv::init()?
     } else if cli.undo.is_some() {
-        history::undo(match cli.undo {
-            Some(x) => x,
-            None => 1,
-        })?
+        history::undo(cli.undo.unwrap_or(1))?
     } else if cli.redo.is_some() {
-        history::redo(match cli.redo {
-            Some(x) => x,
-            None => 1,
-        })?
+        history::redo(cli.redo.unwrap_or(1))?
     } else if cli.view.is_some() {
-        history::view(match cli.view {
-            Some(x) => x,
-            None => 2,
-        })?
+        history::view(cli.view.unwrap_or(2))?
+    } else if cli.migrate {
+        history::migrate()?;
     } else if cli.export_inv.is_some() {
         let unwrapped_export_inv = cli.export_inv.unwrap();
         let export_inv_values = match unwrapped_export_inv.len() {
